@@ -2,7 +2,7 @@ import { User, UserModel, UserAddModel, UserViewModel } from '../models/user'
 
 export class UserService {
     
-    async getUser(id: string): Promise<UserViewModel> {
+    async getUserById(id: string): Promise<UserViewModel> {
         const user = await User.findOne({
             where: {
                 id, 

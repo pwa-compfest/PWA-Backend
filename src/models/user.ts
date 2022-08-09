@@ -29,8 +29,8 @@ import {db} from '../config/database'
 
     export const User = db.define<UserModel, UserAddModel>('users', {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: UUIDV4,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true
         },
         email: {
