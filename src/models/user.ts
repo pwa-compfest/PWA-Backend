@@ -1,4 +1,4 @@
-import { Model,DataTypes,UUIDV4 } from 'sequelize'
+import { Model,DataTypes } from 'sequelize'
 import {db} from '../config/database'
 
     export interface UserAddModel  {

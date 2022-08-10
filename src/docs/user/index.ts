@@ -1,5 +1,5 @@
 export default {
-    "/user": {
+    "/users": {
         "get": {
             "tags": ["User"],
             "summary": "Get all users",
