@@ -23,10 +23,10 @@ export class AuthService {
     let user
     try {
       user = await User.create({
-        id,
         email,
         password: hashedPassword,
         role,
+        refresh_token: 'fdaljdfasljfakj',
       })
     } catch (error) {
       return {
