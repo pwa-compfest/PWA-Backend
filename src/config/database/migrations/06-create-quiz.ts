@@ -16,14 +16,14 @@ module.exports = {
                     key : 'id'
                   }
                 },
-                title: {
+                name: {
                   type: DataTypes.STRING
                 },
-                url: {
+                description: {
                   type: DataTypes.TEXT
                 },
-                description: {
-                    type: DataTypes.STRING
+                total_question: {
+                    type: DataTypes.INTEGER
                 },
                 createdAt: {
                   allowNull: true,

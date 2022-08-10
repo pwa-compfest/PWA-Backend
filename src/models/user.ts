@@ -44,6 +44,7 @@ import {db} from '../config/database'
         },
         refresh_token: {
             type: DataTypes.STRING,
+            allowNull: true
         },
         role: {
             type: DataTypes.STRING,
