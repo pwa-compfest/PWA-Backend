@@ -1,6 +1,51 @@
 {
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2016": true
+    },
     "extends": ["airbnb"],
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
     "rules": {
         // Extended rules is here
+        "class-methods-use-this": [false],
+        "indent": ["error", 2],
+        "import/prefer-default-export": "off",
+        "import/no-unresolved": [2, { "commonjs": true, "amd": true }],
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "js": "never",
+                "ts": "never"
+            }
+        ],
+        "linebreak-style": 0,
+        "no-console": "off",
+        "no-restricted-syntax": [
+            "error",
+            {
+                "selector": "CallExpression[callee.object.name='console'][callee.property.name!=/^(log|warn|error|info|trace)$/]",
+                "message": "Unexpected property on console object was called"
+            }
+        ]
+    },
+    "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+
+        // Choose from one of the "project" configs below or omit to use <root>/tsconfig.json by default
+
+        // use <root>/path/to/folder/tsconfig.json
+        "project": "./tsconfig.json"
+
+        // Multiple tsconfigs (Useg.json"
+      }
     }
+  }
 }
