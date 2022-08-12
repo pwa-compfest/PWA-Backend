@@ -3,6 +3,20 @@ import { CourseSchema } from '@/dto'
 
 export class CourseService {
 
+    async createCourse(payload: CourseInput) {
+        const result = CourseSchema.safeParse({
+            title: payload.title,
+            description: payload.description,
+            image: payload.image,
+        });
+        if(!result.success) {
+            return this.failedOrSuccessRequest('failed', result.error)
+        }
+
+        const course = await Course.create(payload)
+        return this.failedOrSuccessRequest('success', course)
+    }
+
     async getAllCourses(): Promise<CourseOutput[]> {
         return await Course.findAll({
             where:{
@@ -21,30 +35,53 @@ export class CourseService {
         })
     }
 
-    async searchCourse(query: string): Promise<CourseOutput[]> {
-        return await Course.findAll({
-            where:{
-                title: {
-                    // [Op.like]: `%${query}%`
-                },
-                is_verified: true
-            },
-            attributes: ['id', 'instructor_id', 'title', 'description', 'image', 'is_verified']
-        })
-    }
-    
-    async createCourse(payload: CourseInput): Promise<CourseOutput> {
+    async updateCourse(id: number, payload: CourseInput) {
         const result = CourseSchema.safeParse({
-            ...payload,
+            title: payload.title,
+            description: payload.description,
+            image: payload.image,
         });
-        const course = await Course.create(payload)
+        if(!result.success) {
+            return this.failedOrSuccessRequest('failed', result.error)
+        }
+        const course = await Course.update(payload, {
+            where: {
+                id: id
+            },
+            returning: true
+        })
+        if(!course) {
+            return this.failedOrSuccessRequest('failed', 'Course Not Found')
+        }
+        return this.failedOrSuccessRequest('success', course)
+    }
+
+    async getCourseById(id: number){
+        const course = await Course.findByPk(id)
+          if(course == null){
+              return this.failedOrSuccessRequest('failed', 'Course not found')
+          }else{
+              return this.failedOrSuccessRequest('success', course)
+          }
+    }
+
+    async deleteCourse(id: number) {
+        const course = await Course.destroy({
+            where: {
+                id: id
+            }
+        })
+        if(!course) {
+            return this.failedOrSuccessRequest('failed', 'Course not found')
+        }else{
+            return this.failedOrSuccessRequest('Success Delete Course', course)
+        }
+    }
+
+    failedOrSuccessRequest(status: string, data?: any) {
         return {
-            id: course.id,
-            instructor_id: course.instructor_id,
-            title: course.title,
-            description: course.description,
-            image: course.image,
-            is_verified: course.is_verified,
+          status,
+          data
         }
     }
 }
