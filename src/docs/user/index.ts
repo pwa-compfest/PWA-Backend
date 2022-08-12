@@ -30,6 +30,9 @@ export default {
           "description": "Unauthorized"
         }
       }
+    },
+    "post": {
+
     }
   }
 }
