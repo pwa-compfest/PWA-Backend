@@ -1,3 +1,4 @@
+import path from "path";
 import cors from "cors";
 import helmet from "helmet";
 import express, { json, urlencoded } from "express";
@@ -12,7 +13,7 @@ app.use(json());
 app.use(cors());
 app.use(helmet());
 app.use(urlencoded({ extended: true }));
-
+app.use(express.static(path.join(__dirname, 'public')));
 db.authenticate()
   .then(() => console.log("[DB] Connection has been established successfully."))
   .catch((error) =>

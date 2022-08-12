@@ -22,6 +22,9 @@ module.exports = {
                 description: {
                   type: DataTypes.TEXT
                 },
+                image : {
+                  type: DataTypes.STRING
+                },
                 is_verified: {
                     type: DataTypes.BOOLEAN
                 },

@@ -12,7 +12,7 @@ export interface UserAddModel {
 }
 
 export interface UserModel extends Model<UserModel, UserAddModel> {
-  id: number
+  id?: number
   email: string
   password: string
   refresh_token: string
@@ -22,7 +22,7 @@ export interface UserModel extends Model<UserModel, UserAddModel> {
 }
 
 export interface UserViewModel {
-  id: number
+  id?: number
   email: string
   role: string
 }

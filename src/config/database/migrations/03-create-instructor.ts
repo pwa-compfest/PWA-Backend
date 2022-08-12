@@ -34,6 +34,9 @@ module.exports = {
                 photo: {
                   type: DataTypes.STRING
                 },
+                is_verified: {
+                    type: DataTypes.BOOLEAN
+                },
                 createdAt: {
                   allowNull: true,
                   type: DataTypes.DATE

@@ -1,4 +1,4 @@
-import { User, UserModel, UserAddModel, UserViewModel } from '../models/user'
+import {User,UserViewModel,UserAddModel} from '@/models'
 
 export class UserService {
   async getUserById(id: string): Promise<UserViewModel> {

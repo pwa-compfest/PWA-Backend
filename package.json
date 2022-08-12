@@ -24,6 +24,9 @@
     },
     "homepage": "https://github.com/fajarbh14/perwibuan-lms-api#readme",
     "dependencies": {
+        "@types/multer": "^1.4.7",
+        "@types/multer-s3": "^3.0.0",
+        "aws-sdk": "^2.1192.0",
         "bcryptjs": "^2.4.3",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
@@ -31,6 +34,7 @@
         "express": "^4.18.1",
         "helmet": "^5.1.0",
         "jsonwebtoken": "^8.5.1",
+        "multer": "^1.4.5-lts.1",
         "pg": "^8.7.3",
         "pg-hstore": "^2.3.4",
         "reflect-metadata": "^0.1.13",
