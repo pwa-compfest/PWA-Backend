@@ -1,6 +1,8 @@
 import { User } from "@/models/user";
 import { signJWT, verifyJWT } from "@/utils/jwt";
 import { NextFunction, Request, Response } from "express";
+import jwt from 'jsonwebtoken'
+import argon2 from 'argon2'
 
 export default async function deserializeUser(
   req: Request,
@@ -13,14 +15,40 @@ export default async function deserializeUser(
   if (!accessToken) return next()
 
   const { payload: accessTokenPayload, expired } = verifyJWT(accessToken)
-
   if (accessTokenPayload) {
     console.log(accessTokenPayload)
+  const { payload: accessTokenPayload, expired: accessTokenExpired } = verifyJWT(accessToken)
+
+  if (accessTokenPayload) {
+    // @ts-ignore
+    const { email, role } = accessTokenPayload
+    // @ts-ignore
+    req.user = { email, role }
     return next()
   }
 
   //invalid access token
   const { payload: refreshTokenPayload } = expired && refreshToken ? verifyJWT(refreshToken) : { payload: null }
+  const { payload: refreshTokenPayload, expired: refreshTokenExpired } = accessTokenExpired && refreshToken ? verifyJWT(refreshToken) : { payload: null, expired: true }
+
+  // Check if refreshToken expired
+  // @ts-ignore
+  if (refreshTokenExpired && refreshTokenExpired.name === 'TokenExpiredError') {
+    // @ts-ignore
+    const { email } = jwt.verify(refreshToken, process.env.PUBLIC_KEY as string, { ignoreExpiration: true })
+    // Delete the current refreshToken in database
+    await User.update({
+      // @ts-ignore
+      refresh_token: null,
+      has_session: 0
+    }, {
+      where: {
+        email
+      }
+    })
+
+    return next()
+  }
 
   if (!refreshTokenPayload) {
     return next()
@@ -40,6 +68,13 @@ export default async function deserializeUser(
     return next()
   }
 
+  // Check if the current refreshToken === hashedRefreshToken in database
+  const refreshTokenMatches = await argon2.verify(user.refresh_token, refreshToken)
+
+  if (!refreshTokenMatches) {
+    return next()
+  }
+
   // User has session, create new accessToken
   const newAccessToken = signJWT({ email: user.email, role: user.role }, '30s')
 
@@ -51,6 +86,6 @@ export default async function deserializeUser(
 
   // @ts-ignore
   req.user = verifyJWT(newAccessToken).payload
-
+  req.user = { email: user.email, role: user.role }
   return next()
 }

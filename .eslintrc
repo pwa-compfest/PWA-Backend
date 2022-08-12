@@ -9,6 +9,7 @@
     "plugins": ["@typescript-eslint"],
     "rules": {
         // Extended rules is here
+        "quotes": ["error", "single"],
         "class-methods-use-this": [false],
         "indent": ["error", 2],
         "import/prefer-default-export": "off",

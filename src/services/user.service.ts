@@ -11,7 +11,7 @@ export class UserService {
       throw new Error('User not found')
     }
     return {
-      id: user.id,
+      id: user.id as number,
       email: user.email,
       role: user.role,
     }
@@ -23,7 +23,7 @@ export class UserService {
     })
     return users.map((user) => {
       return {
-        id: user.id,
+        id: user.id as number,
         email: user.email,
         role: user.role,
       }
@@ -33,7 +33,7 @@ export class UserService {
   async addUser(user: UserAddModel): Promise<UserViewModel> {
     const newUser = await User.create(user)
     return {
-      id: newUser.id,
+      id: newUser.id as number,
       email: newUser.email,
       role: newUser.role,
     }
@@ -57,7 +57,7 @@ export class UserService {
       throw new Error('User not found')
     }
     return {
-      id: user.id,
+      id: user.id as number,
       email: user.email,
       role: user.role,
     }
