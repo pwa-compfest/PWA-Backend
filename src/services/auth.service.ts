@@ -244,4 +244,12 @@ export class AuthService {
       data
     }
   }
+
+  async signIn() {
+    const baka = "sajk"
+  }
 }
+
+
+
+
