@@ -26,7 +26,7 @@ export interface UserModel extends Model<UserModel, UserAddModel> {
 }
 
 export interface UserViewModel {
-  id: number
+  id?: number
   email: string
   role: string
 }

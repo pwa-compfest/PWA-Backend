@@ -14,6 +14,9 @@ export default async function deserializeUser(
   // If there is no accessToken continue to the next step
   if (!accessToken) return next()
 
+  const { payload: accessTokenPayload, expired } = verifyJWT(accessToken)
+  if (accessTokenPayload) {
+    console.log(accessTokenPayload)
   const { payload: accessTokenPayload, expired: accessTokenExpired } = verifyJWT(accessToken)
 
   if (accessTokenPayload) {
@@ -25,6 +28,7 @@ export default async function deserializeUser(
   }
 
   //invalid access token
+  const { payload: refreshTokenPayload } = expired && refreshToken ? verifyJWT(refreshToken) : { payload: null }
   const { payload: refreshTokenPayload, expired: refreshTokenExpired } = accessTokenExpired && refreshToken ? verifyJWT(refreshToken) : { payload: null, expired: true }
 
   // Check if refreshToken expired
@@ -59,7 +63,6 @@ export default async function deserializeUser(
     }
   })
 
-
   // check if the user exist or has session
   if (!user || !user.has_session) {
     return next()
@@ -82,7 +85,7 @@ export default async function deserializeUser(
   })
 
   // @ts-ignore
+  req.user = verifyJWT(newAccessToken).payload
   req.user = { email: user.email, role: user.role }
-
   return next()
 }

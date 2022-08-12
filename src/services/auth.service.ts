@@ -332,10 +332,4 @@ export class AuthService {
       data
     }
   }
-
-
 }
-
-
-
-

@@ -50,7 +50,6 @@ module.exports = {
       });
     }
   ),
-
   down: (queryInterface: QueryInterface): Promise<void> => queryInterface.sequelize.transaction(
     async (transaction) => {
       await queryInterface.dropTable('instructors');

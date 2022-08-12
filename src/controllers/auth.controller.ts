@@ -70,7 +70,6 @@ export const signIn = async (req: Request, res: Response) => {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     httpOnly: true,
   })
-
   return getResponse(res, 200, 'Sign In Success', {})
 }
 

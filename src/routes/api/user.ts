@@ -4,7 +4,7 @@ const router = Router()
 
 router.get('/',UserController.get)
 router.get('/:id',UserController.getById)
-router.post('/store',UserController.store)
+router.post('/',UserController.store)
 
 export default router
   
