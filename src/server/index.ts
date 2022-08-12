@@ -4,6 +4,7 @@ import express, { json, urlencoded } from "express";
 import { db } from "../config/database";
 import routes from "@/routes";
 import cookieParser from "cookie-parser";
+import deserializeUser from "@/middleware/deserializeUser";
 
 const app = express();
 
@@ -13,11 +14,14 @@ app.use(cors());
 app.use(helmet());
 app.use(urlencoded({ extended: true }));
 
+app.use(deserializeUser)
+
 db.authenticate()
   .then(() => console.log("[DB] Connection has been established successfully."))
   .catch((error) =>
     console.error("[DB] Unable to connect to the database:", error)
   );
+
 
 app.use(routes);
 

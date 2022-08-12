@@ -1,0 +1,1 @@
+import * as UserTypes from '@/common/types/user'
