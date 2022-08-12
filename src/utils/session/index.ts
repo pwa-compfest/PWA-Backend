@@ -1,1 +1,0 @@
-export function createSession(email: string, role: string) { }

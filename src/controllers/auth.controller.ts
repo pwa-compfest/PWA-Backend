@@ -55,10 +55,41 @@ export const verifyAccount = async (req: Request, res: Response) => {
 }
 
 export const signIn = async (req: Request, res: Response) => {
-  return getResponse(res, 200, 'Success', {})
+  const { email, password } = req.body
+  const result = await authService.signIn(email, password)
+  if (result.status === 'failed') {
+    return getResponse(res, 403, result.data, {})
+  }
+  const { accessToken, refreshToken } = result.data
+
+  res.cookie('PWA_LMS_AT', accessToken, {
+    maxAge: 24 * 60 * 60 * 1000, // 1 day ,
+    httpOnly: true,
+  })
+  res.cookie('PWA_LMS_RT', refreshToken, {
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+    httpOnly: true,
+  })
+
+  return getResponse(res, 200, 'Sign In Success', {})
 }
 
 
 export const signOut = async (req: Request, res: Response) => {
-  return getResponse(res, 200, 'Success', {})
+  // @ts-ignore
+  const { email } = req.user
+  const result = await authService.signOut(email)
+  if (result.status === 'failed') {
+    return getResponse(res, 403, result.data, {})
+  }
+  // Remove accessToken and refreshToken from cookie
+  res.cookie('PWA_LMS_AT', '', {
+    maxAge: -1,
+    httpOnly: true,
+  })
+  res.cookie('PWA_LMS_RT', '', {
+    maxAge: -1,
+    httpOnly: true
+  })
+  return getResponse(res, 200, 'Sign Out Success', {})
 }
