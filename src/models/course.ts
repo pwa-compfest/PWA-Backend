@@ -49,7 +49,3 @@ export const Course = db.define<CourseInstance>('courses', {
 },{
     timestamps: true,
 })
-// Course.belongsTo(Instructor, {
-//     foreignKey: 'instructor_id',
-//     as: 'instructor'
-// });

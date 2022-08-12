@@ -1,42 +1,42 @@
-import { DataTypes, Model } from 'sequelize'
-import { db } from '@/config'
+import { db } from "@/config";
+import { DataTypes, Model } from "sequelize";
 
-export interface InstructorModel extends Model<InstructorModel, InstructorAddModel> {
+export interface StudentModel extends Model<StudentModel, StudentAddModel> {
   id: number
-  nip: string
+  nisn: string
   user_id: number
   name: string
+  grade: string
   gender: string
-  expertise: string
-  phone_number: string
+  majority: string
+  phone_number?: string
   photo?: string
-  is_verified: number
   createdAt: Date
   updatedAt: Date
 }
 
-export interface InstructorAddModel {
+export interface StudentAddModel {
   id?: number
-  nip: string
+  nisn: string
   user_id: number
   name: string
+  grade: string
   gender: string
-  expertise: string
-  phone_number: string
+  majority: string
+  phone_number?: string
   photo?: string
-  is_verified?: number
   createdAt?: Date
   updatedAt?: Date
 }
 
-export const Instructor = db.define<InstructorModel, InstructorAddModel>('instructors', {
+export const Student = db.define<StudentModel, StudentAddModel>('students', {
   id: {
     allowNull: false,
     autoIncrement: true,
     primaryKey: true,
     type: DataTypes.INTEGER
   },
-  nip: {
+  nisn: {
     type: DataTypes.STRING
   },
   user_id: {
@@ -49,10 +49,13 @@ export const Instructor = db.define<InstructorModel, InstructorAddModel>('instru
   name: {
     type: DataTypes.STRING
   },
+  grade: {
+    type: DataTypes.STRING
+  },
   gender: {
     type: DataTypes.STRING
   },
-  expertise: {
+  majority: {
     type: DataTypes.STRING
   },
   phone_number: {
@@ -62,10 +65,6 @@ export const Instructor = db.define<InstructorModel, InstructorAddModel>('instru
     allowNull: true,
     type: DataTypes.STRING
   },
-  is_verified: {
-    defaultValue: 0,
-    type: DataTypes.INTEGER
-  }
 }, {
   timestamps: true
 })
