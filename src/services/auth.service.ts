@@ -150,7 +150,7 @@ export class AuthService {
       return this.failedOrSuccessRequest('failed', sendMailError)
     }
 
-    return this.failedOrSuccessRequest('success', resultCreateDetails)
+    return this.failedOrSuccessRequest('success', {})
   }
 
   async verifyAccount(token: string, userId: number) {
@@ -232,7 +232,7 @@ export class AuthService {
       return this.failedOrSuccessRequest('failed', error)
     }
 
-    return this.failedOrSuccessRequest('sucess', { accessToken, refreshToken })
+    return this.failedOrSuccessRequest('success', {})
   }
 
   async signIn(email: string, password: string) {
