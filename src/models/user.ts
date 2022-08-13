@@ -44,6 +44,18 @@ export interface UserVerificationTokenModel extends Model<UserVerificationTokenM
   hashed_token: string
 }
 
+export interface ChangePasswordTokenAddModel {
+  id?: number
+  user_id: number
+  expires: Date
+  hashed_token: string
+}
+export interface ChangePasswordTokenModel extends Model<ChangePasswordTokenModel, ChangePasswordTokenAddModel> {
+  id?: number
+  user_id: number
+  expires: Date
+  hashed_token: string
+}
 
 export const User = db.define<UserModel, UserAddModel>('users', {
   id: {
@@ -84,6 +96,32 @@ export const User = db.define<UserModel, UserAddModel>('users', {
 })
 
 export const UserVerificationToken = db.define<UserVerificationTokenModel, UserVerificationTokenAddModel>('user_verification_tokens', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  user_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'users',
+      key: 'id'
+    }
+  },
+  expires: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  hashed_token: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    unique: true,
+  },
+}, {
+  timestamps: false
+})
+
+export const ChangePasswordToken = db.define<ChangePasswordTokenModel, ChangePasswordTokenAddModel>('change_password_tokens', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,

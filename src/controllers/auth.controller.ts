@@ -2,6 +2,7 @@ import { AdminDetails, InstructorDetails, StudentDetails } from '@/common/types/
 import { AuthService } from '@/services/auth.service';
 import { getResponse } from '@/utils';
 import { Request, Response } from 'express';
+import { resourceLimits } from 'worker_threads';
 
 const authService = new AuthService();
 
@@ -91,4 +92,26 @@ export const signOut = async (req: Request, res: Response) => {
     httpOnly: true
   })
   return getResponse(res, 200, 'Sign Out Success', {})
+}
+
+export const sendChangePasswordEmail = async (req: Request, res: Response) => {
+  const { email } = req.body
+
+  const result = await authService.sendChangePasswordEmail(email)
+  if (result.status === 'failed') {
+    return getResponse(res, 403, result.data, {})
+  }
+
+  return getResponse(res, 200, 'Email has been sent', {})
+}
+
+export const verifyNewPassword = async (req: Request, res: Response) => {
+  const { token, userId, password, confirmPassword } = req.body
+  const result = await authService.verifyNewPassword(token, userId, password, confirmPassword)
+
+  if (result.status === 'failed') {
+    return getResponse(res, 403, result.data, {})
+  }
+
+  return getResponse(res, 200, 'Password has been reset', {})
 }
