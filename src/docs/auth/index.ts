@@ -1,12 +1,12 @@
 export default {
-  '/auth/signup': {
+  "/auth/signup": {
     "post": {
       "tags": ["Auth"],
       "summary": "Sign Up New User",
       "description": "Sign Up New User",
       "operationId": "signUp",
       "requestBody": {
-        "descrtion": "Input Sign Up Data",
+        "description": "Input Sign Up Data",
         "content": {
           "application/json": {
             "schema": {
@@ -93,7 +93,7 @@ export default {
               "example": {
                 "code": 200,
                 "status": "success",
-                "message": "Email has been send",
+                "message": "Email has been sent",
                 "data": {}
               }
             }
@@ -173,4 +173,220 @@ export default {
       }
     },
   },
+  "/auth/signin": {
+    "post": {
+      "tags": ["Auth"],
+      "summary": "Sign In User",
+      "description": "Sign In User",
+      "operationId": "signIn",
+      "requestBody": {
+        "description": "Input Sign In Data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@mail.com",
+                  "required": true
+                },
+                "password": {
+                  "type": "string",
+                  "example": "12345678",
+                  "required": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Sign In Success",
+          "content": {
+            "application/json": {
+              "example": {
+                "code": 200,
+                "status": "success",
+                "message": "Sign In Success",
+                "data": {}
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Sign In Failed",
+          "content": {
+            "application/json": {
+              "example": {
+                "code": 403,
+                "status": "failed",
+                "message": "<Error Message>",
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/auth/signout": {
+    "post": {
+      "security": [{
+        "cookieAuth": []
+      }],
+      "tags": ["Auth"],
+      "summary": "Sign Out User",
+      "description": "Sign Out User",
+      "operationId": "signOut",
+      "responses": {
+        "200": {
+          "description": "Sign Out Success",
+          "content": {
+            "application/json": {
+              "example": {
+                "code": 200,
+                "status": "success",
+                "message": "Sign Out Success",
+                "data": {}
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Sign Out Failed",
+          "content": {
+            "application/json": {
+              "example": {
+                "code": 403,
+                "status": "failed",
+                "message": "<Error Message>",
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/auth/password/send": {
+    "post": {
+      "tags": ["Auth"],
+      "summary": "Send Change Password Email",
+      "description": "Send Change Password Email",
+      "operationId": "passwordSend",
+      "requestBody": {
+        "description": "Input Email Data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "user@mail.com",
+                  "required": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Email has been sent",
+          "content": {
+            "application/json": {
+              "example": {
+                "code": 200,
+                "status": "success",
+                "message": "Email has been sent",
+                "data": {}
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Failed to send email",
+          "content": {
+            "application/json": {
+              "example": {
+                "code": 403,
+                "status": "failed",
+                "message": "<Error Message>",
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/auth/password/verify": {
+    "post": {
+      "security": [{
+        "cookieAuth": []
+      }],
+      "tags": ["Auth"],
+      "summary": "Verify New Password",
+      "description": "Verify New Password",
+      "operationId": "verifyPassword",
+      "requestBody": {
+        "description": "Change Password Data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "number",
+                  "example": 69,
+                  "required": true,
+                },
+                "password": {
+                  "type": "string",
+                  "example": "12345678",
+                  "required": true,
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "example": "12345678",
+                  "required": true,
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Verify New Password Success",
+          "content": {
+            "application/json": {
+              "example": {
+                "code": 200,
+                "status": "success",
+                "message": "Password Changed",
+                "data": {}
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Verify New Password Failed",
+          "content": {
+            "application/json": {
+              "example": {
+                "code": 403,
+                "status": "failed",
+                "message": "<Error Message>",
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

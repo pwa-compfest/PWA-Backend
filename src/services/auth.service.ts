@@ -1,5 +1,5 @@
 import { InstructorDetails, StudentDetails, AdminDetails } from '@/common/types/user';
-import { signInSchema, signUpSchema } from '@/dto';
+import { changePasswordEmail, changePasswordSchema, signInSchema, signUpSchema } from '@/dto';
 import { Instructor } from '@/models/instructor';
 import { Student } from '@/models/student';
 import { ChangePasswordToken, User, UserVerificationToken } from '@/models/user';
@@ -329,6 +329,15 @@ export class AuthService {
   }
 
   async sendChangePasswordEmail(email: string) {
+    // TODO: Validate request data
+    const result = await changePasswordEmail.safeParse({
+      email
+    })
+
+    if (!result.success) {
+      return this.failedOrSuccessRequest('failed', result.error.format())
+    }
+
     // TODO: Find the user with following email address
     const user = await User.findOne({
       where: {
@@ -417,6 +426,19 @@ export class AuthService {
   }
 
   async verifyNewPassword(token: string, userId: number, password: string, confirmPassword: string) {
+    // TODO: Verify request data
+    const result = await changePasswordSchema.safeParse({
+      password,
+      confirmPassword,
+      userId,
+      token,
+    })
+
+    if (!result.success) {
+      return this.failedOrSuccessRequest('failed', result.error.format())
+    }
+
+
     // TODO: Check if the token is valid or not
     // TODO: Get the token from database with current userId
     const hashedChangePasswordToken = await ChangePasswordToken.findOne({

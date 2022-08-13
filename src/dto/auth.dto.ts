@@ -93,3 +93,15 @@ export const signInSchema = z.object({
   password: z.string()
 })
 
+export const changePasswordEmail = z.object({
+  email: z.string().email('Invalid Email Address')
+})
+
+export const changePasswordSchema = z.object({
+  token: z.string(),
+  userId: z.number(),
+  password: z.string().max(8, { message: 'Password at least 8 characters' }),
+  confirmPassword: z.string()
+}).refine((data) => data.password !== data.confirmPassword, {
+  message: 'Password and confirm password must be same'
+})
