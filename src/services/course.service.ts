@@ -1,5 +1,6 @@
 import { Course,CourseInput,CourseOutput } from '@/models/index'
 import { CourseSchema } from '@/dto'
+import {Op} from "sequelize";
 
 export class CourseService {
 
@@ -17,13 +18,63 @@ export class CourseService {
         return this.failedOrSuccessRequest('success', course)
     }
 
-    async getAllCourses(): Promise<CourseOutput[]> {
-        return await Course.findAll({
-            where:{
+    async getAllCourses(page: number, limit: number){
+        const course = await Course.findAll({
+            where: {
                 is_verified: true
             },
+            offset: (page - 1) * limit,
+            limit: limit,
             attributes: ['id', 'instructor_id', 'title', 'description', 'image', 'is_verified']
         })
+        if(!course) {
+            return this.failedOrSuccessRequest('failed', 'Course not found')
+        }
+        return this.failedOrSuccessRequest('success', course)
+
+    }
+
+    async getBySearch(search: string, page: number, limit: number): Promise<any> {
+        const course = await Course.findAll({
+            where: {
+                is_verified: true,
+                title: {
+                    [Op.iLike]: `%${search}%`
+                }
+            },
+            offset: (page - 1) * limit,
+            limit: limit,
+            attributes: ['id', 'instructor_id', 'title', 'description', 'image', 'is_verified']
+        })
+        if(!course) {
+            return this.failedOrSuccessRequest('failed', 'Course not found')
+        }
+        return this.failedOrSuccessRequest('success', course)
+    }
+
+    async countBySearch(search: string, limit: number){
+        const course = await Course.count({
+            where: {
+                is_verified: true,
+                title: {
+                    [Op.iLike]: `%${search}%`
+                }
+            }
+        })
+        const totalCourse = {
+            totalRows: course,
+            totalPage: Math.ceil(course / limit)
+        }
+        return totalCourse
+    }
+
+    async count(limit: number){
+        const course = await Course.count()
+        const totalCourse = {
+            totalRows: course,
+            totalPage: Math.ceil(course / limit)
+        }
+        return totalCourse
     }
 
     async getCourseByInstructorId(id: number): Promise<CourseOutput[]> {

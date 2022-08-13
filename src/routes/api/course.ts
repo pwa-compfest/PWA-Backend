@@ -10,5 +10,5 @@ router.post('/',upload.single('image'),store)
 router.put('/:id',upload.single('image'),update)
 router.delete('/:id',destroy)
 
+
 export default router
-  
