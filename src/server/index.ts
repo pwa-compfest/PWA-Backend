@@ -2,7 +2,7 @@ import path from "path";
 import cors from "cors";
 import helmet from "helmet";
 import express, { json, urlencoded } from "express";
-import { db } from "../config/database";
+import { db } from "@/config/database";
 import routes from "@/routes";
 import cookieParser from "cookie-parser";
 import deserializeUser from "@/middleware/deserializeUser";

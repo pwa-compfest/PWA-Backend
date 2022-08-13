@@ -7,4 +7,3 @@ router.get('/:id',UserController.getById)
 router.post('/',UserController.store)
 
 export default router
-  

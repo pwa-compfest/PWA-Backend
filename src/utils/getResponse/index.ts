@@ -5,6 +5,7 @@ const getResponse = (
   statusCode: number,
   message: string,
   data: any,
+  total?: any
 ): Response => res
   .status(statusCode)
   .json({
@@ -12,7 +13,9 @@ const getResponse = (
     status: statusCode < 400 ? 'success' : 'failed',
     message,
     data,
+    total : total ? total : null
   })
+
   .end();
 
 export default getResponse;
