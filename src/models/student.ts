@@ -63,7 +63,7 @@ export const Student = db.define<StudentModel, StudentAddModel>('students', {
   },
   photo: {
     allowNull: true,
-    type: DataTypes.STRING
+    type: DataTypes.TEXT
   },
 }, {
   timestamps: true

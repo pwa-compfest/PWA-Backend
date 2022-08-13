@@ -60,7 +60,7 @@ export const Instructor = db.define<InstructorModel, InstructorAddModel>('instru
   },
   photo: {
     allowNull: true,
-    type: DataTypes.STRING
+    type: DataTypes.TEXT
   },
   is_verified: {
     defaultValue: 0,

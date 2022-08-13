@@ -7,17 +7,17 @@ import { resourceLimits } from 'worker_threads';
 const authService = new AuthService();
 
 export const signUp = async (req: Request, res: Response) => {
-  const { email, password, confirmPassword, role, name, photo, phoneNumber } = req.body;
+  const { email, password, confirmPassword, role, name, photo, phoneNumber, gender } = req.body;
 
   let data: StudentDetails | InstructorDetails | AdminDetails
 
   if (role === 'ADMIN') {
     data = { role }
   } else if (role === 'INSTRUCTOR') {
-    const { nip, gender, expertise } = req.body
+    const { nip, expertise } = req.body
     data = { role, nip, name, gender, expertise, phoneNumber, photo }
   } else if (role === 'STUDENT') {
-    const { nisn, grade, gender, majority } = req.body
+    const { nisn, grade, majority } = req.body
     data = { role, nisn, name, grade, gender, majority, phoneNumber, photo }
   } else {
     return getResponse(res, 403, 'Invalid Role', {})
@@ -29,7 +29,7 @@ export const signUp = async (req: Request, res: Response) => {
     return getResponse(res, 403, result.data, {});
   }
 
-  return getResponse(res, 200, 'Success', result.data);
+  return getResponse(res, 200, 'Email has been send', result.data);
 };
 
 export const verifyAccount = async (req: Request, res: Response) => {
@@ -52,7 +52,7 @@ export const verifyAccount = async (req: Request, res: Response) => {
     httpOnly: true,
   })
 
-  return getResponse(res, 200, 'Account activated', {})
+  return getResponse(res, 200, 'Account Activated', {})
 }
 
 export const signIn = async (req: Request, res: Response) => {

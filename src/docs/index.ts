@@ -1,5 +1,5 @@
 export const swaggerDocument = {
-  openapi: '3.0.1',
+  openapi: '3.0.3',
   info: {
     title: 'Rest API',
     description: 'API Documentation.',
@@ -21,6 +21,6 @@ export const swaggerDocument = {
   },
   paths: {
     // eslint-disable-next-line global-require
-    ...require('./user').default,
+    ...require('./auth').default,
   },
 };
