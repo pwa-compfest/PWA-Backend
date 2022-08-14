@@ -18,7 +18,6 @@ interface CourseInstance extends Model<CourseAttributes, CourseInput>,
         createdAt?: Date
         updatedAt?: Date
     }
-
 export const Course = db.define<CourseInstance>('courses', {
     id: {
         allowNull: false,
@@ -49,7 +48,6 @@ export const Course = db.define<CourseInstance>('courses', {
 },{
     timestamps: true,
 })
-
 Course.belongsTo(Instructor, {
   foreignKey: 'instructor_id',
   as: 'instructor'

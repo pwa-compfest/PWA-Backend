@@ -25,17 +25,11 @@ export class CourseService {
       },
       offset: (page - 1) * limit,
       limit: limit,
-      attributes: {
-        ['include']: [
-          [Sequelize.col('instructor.name'), 'instructor_name'],
-        ]
-      },
       include: [{
         model: Instructor,
-        required: false,
-        as : 'instructor',
-        attributes: []
-      }]
+        as: 'instructor',
+        attributes: ['nip','name']
+      }],
     })
     if (!course) {
       return this.failedOrSuccessRequest('failed', 'Course not found')
@@ -54,7 +48,11 @@ export class CourseService {
       },
       offset: (page - 1) * limit,
       limit: limit,
-      attributes: ['id', 'instructor_id', 'title', 'description', 'image', 'is_verified']
+      include: [{
+        model: Instructor,
+        as: 'instructor',
+        attributes: ['nip','name']
+      }],
     })
     if (!course) {
       return this.failedOrSuccessRequest('failed', 'Course not found')
@@ -97,7 +95,11 @@ export class CourseService {
       where: {
         instructor_id: id,
       },
-      attributes: ['id', 'instructor_id', 'title', 'description', 'image', 'is_verified']
+      include: [{
+        model: Instructor,
+        as: 'instructor',
+        attributes: ['nip','name']
+      }],
     })
   }
 
@@ -124,16 +126,10 @@ export class CourseService {
 
   async getCourseById(id: number) {
     const course = await Course.findByPk(id,{
-      attributes: {
-        ['include']: [
-          [Sequelize.col('instructor.name'), 'instructor_name'],
-        ]
-      },
       include: [{
         model: Instructor,
-        required: false,
-        as : 'instructor',
-        attributes: []
+        as: 'instructor',
+        attributes: ['nip','name']
       }]
     })
     if (course == null) {
