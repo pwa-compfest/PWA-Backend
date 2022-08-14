@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
 import { db } from '@/config'
 
+
 export interface InstructorModel extends Model<InstructorModel, InstructorAddModel> {
   id: number
   nip: string

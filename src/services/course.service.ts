@@ -1,19 +1,22 @@
-import { Course, CourseInput, CourseOutput } from '@/models/index'
+import { Course, CourseInput, CourseOutput, Instructor } from '@/models/index'
 import { CourseSchema } from '@/dto'
-import { Op } from "sequelize";
+import { Op,Sequelize } from "sequelize";
 
 export class CourseService {
 
-  async createCourse(payload: CourseInput) {
-    const result = CourseSchema.safeParse({
-      title: payload.title,
-      description: payload.description,
-      image: payload.image,
-    });
-    if (!result.success) {
-      return this.failedOrSuccessRequest('failed', result.error)
+    async createCourse(payload: CourseInput) {
+        const result = CourseSchema.safeParse({
+            title: payload.title,
+            description: payload.description,
+            image: payload.image,
+        });
+        if (!result.success) {
+            return this.failedOrSuccessRequest('failed', result.error)
+        }
+        const course = await Course.create(payload)
+        return this.failedOrSuccessRequest('success', course)
+
     }
-  }
 
   async getAllCourses(page: number, limit: number) {
     const course = await Course.findAll({
@@ -22,7 +25,17 @@ export class CourseService {
       },
       offset: (page - 1) * limit,
       limit: limit,
-      attributes: ['id', 'instructor_id', 'title', 'description', 'image', 'is_verified']
+      attributes: {
+        ['include']: [
+          [Sequelize.col('instructor.name'), 'instructor_name'],
+        ]
+      },
+      include: [{
+        model: Instructor,
+        required: false,
+        as : 'instructor',
+        attributes: []
+      }]
     })
     if (!course) {
       return this.failedOrSuccessRequest('failed', 'Course not found')
@@ -66,7 +79,11 @@ export class CourseService {
   }
 
   async count(limit: number) {
-    const course = await Course.count()
+    const course = await Course.count({
+      where: {
+        is_verified: true
+      }
+    })
     const totalCourse = {
       totalRows: course,
       totalPage: Math.ceil(course / limit)
@@ -106,7 +123,19 @@ export class CourseService {
   }
 
   async getCourseById(id: number) {
-    const course = await Course.findByPk(id)
+    const course = await Course.findByPk(id,{
+      attributes: {
+        ['include']: [
+          [Sequelize.col('instructor.name'), 'instructor_name'],
+        ]
+      },
+      include: [{
+        model: Instructor,
+        required: false,
+        as : 'instructor',
+        attributes: []
+      }]
+    })
     if (course == null) {
       return this.failedOrSuccessRequest('failed', 'Course not found')
     } else {

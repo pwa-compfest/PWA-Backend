@@ -1,6 +1,7 @@
 import { CourseService } from '@/services/course.service'
 import { Request, Response } from 'express'
 import { getResponse, getHttpCode,downloadObject, uploadFile, deleteObject} from '@/utils'
+import fs from 'fs'
 
 const courseService = new CourseService()
 
@@ -15,9 +16,9 @@ export const get = async (req: Request, res: Response) => {
         total = await courseService.countBySearch(search, limit)
     }
     if(result.status === 'failed'){
-        return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed',null, total)
+        return getResponse(res, getHttpCode.BAD_REQUEST,'Failed Get Courses', total)
     }
-    return getResponse(res, getHttpCode.OK, 'Success', result.data, total)
+    return getResponse(res, getHttpCode.OK,'Success Get Courses',result.data, total)
 }
 
 export const getImage = async (req: Request, res: Response) => {
@@ -40,11 +41,12 @@ export const store = async (req: Request, res: Response) => {
             image: file.filename
         }
         const result = await courseService.createCourse(payload)
-        uploadFile(file,bucket)
         if (result.status === 'failed') {
-            return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
+            fs.unlinkSync(file.path)
+            return getResponse(res, getHttpCode.BAD_REQUEST,result.data, null);
         }
-        return getResponse(res, getHttpCode.OK, 'Success', result.data);
+        uploadFile(file,bucket)
+        return getResponse(res, getHttpCode.OK,"Your Request Has Been Sent",result.data);
 }
 
 export const update = async (req: Request, res: Response) => {
@@ -52,12 +54,8 @@ export const update = async (req: Request, res: Response) => {
     const file = req.file
     const bucket = 'perwibuan-mooc/courses'
     const data = await courseService.getCourseById(id)
-    let image = data.data.image
-    if(file != null){
-        image = file.filename
-        deleteObject(bucket,data.data.image)
-        uploadFile(file,bucket)
-    }
+    let image = file != null ? file.filename : data.data.image
+
 
     const payload = {
         instructor_id: req.body.instructor_id,
@@ -66,10 +64,16 @@ export const update = async (req: Request, res: Response) => {
         image: image
     }
     const result = await courseService.updateCourse(id,payload)
+
+    if(file != null){
+        deleteObject(bucket,data.data.image)
+        uploadFile(file,bucket)
+    }
+
     if(result.status === 'failed') {
         return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
     }else{
-        return getResponse(res, getHttpCode.OK, 'Success', result.data);
+        return getResponse(res, getHttpCode.OK, 'Success Edit Course', result.data);
     }
 }
 
@@ -85,7 +89,7 @@ export const destroy = async (req: Request, res: Response) => {
         if(result.status === 'failed') {
           return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
         }else{
-          return getResponse(res, getHttpCode.OK, 'Success', result.data);
+          return getResponse(res, getHttpCode.OK, 'Success Delete Course', result.data);
         }
     }
 }
@@ -96,6 +100,6 @@ export const getCourseById = async (req: Request, res: Response,) => {
     if(result.status === 'failed') {
         return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
     }else{
-        return getResponse(res, getHttpCode.OK, 'Success', result.data);
+        return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
     }
 }
