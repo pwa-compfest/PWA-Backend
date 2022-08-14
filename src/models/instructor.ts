@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
 import { db } from '@/config'
 
+
 export interface InstructorModel extends Model<InstructorModel, InstructorAddModel> {
   id: number
   nip: string
@@ -60,7 +61,7 @@ export const Instructor = db.define<InstructorModel, InstructorAddModel>('instru
   },
   photo: {
     allowNull: true,
-    type: DataTypes.STRING
+    type: DataTypes.TEXT
   },
   is_verified: {
     defaultValue: 0,

@@ -1,12 +1,13 @@
 import { InstructorDetails, StudentDetails, AdminDetails } from '@/common/types/user';
-import { signInSchema, signUpSchema } from '@/dto';
+import { changePasswordEmail, changePasswordSchema, signInSchema, signUpSchema } from '@/dto';
 import { Instructor } from '@/models/instructor';
 import { Student } from '@/models/student';
-import { User, UserVerificationToken } from '@/models/user';
+import { ChangePasswordToken, User, UserVerificationToken } from '@/models/user';
 import { signJWT } from '@/utils/jwt';
 import argon2 from 'argon2'
 import { createTransport } from 'nodemailer';
 import { v4 as uuidv4 } from 'uuid'
+
 export class AuthService {
   async signUp(email: string, password: string, confirmPassword: string, data: AdminDetails | InstructorDetails | StudentDetails) {
     // validate the data
@@ -149,7 +150,7 @@ export class AuthService {
       return this.failedOrSuccessRequest('failed', sendMailError)
     }
 
-    return this.failedOrSuccessRequest('success', resultCreateDetails)
+    return this.failedOrSuccessRequest('success', {})
   }
 
   async verifyAccount(token: string, userId: number) {
@@ -231,7 +232,7 @@ export class AuthService {
       return this.failedOrSuccessRequest('failed', error)
     }
 
-    return this.failedOrSuccessRequest('sucess', { accessToken, refreshToken })
+    return this.failedOrSuccessRequest('success', {})
   }
 
   async signIn(email: string, password: string) {
@@ -256,6 +257,11 @@ export class AuthService {
       return this.failedOrSuccessRequest('failed', 'Invalid Credentials')
     }
 
+    // TODO: Check if the user already verified
+    if (!user.is_verified) {
+      return this.failedOrSuccessRequest('failed', 'Account not verified')
+    }
+
     // Check the password from user and password in db
     const passwordMatches = await argon2.verify(user.password, password)
 
@@ -263,10 +269,10 @@ export class AuthService {
       return this.failedOrSuccessRequest('failed', 'Invalid Credentials')
     }
 
-    // Check if the user still has session or not
-    if (user.has_session) {
-      return this.failedOrSuccessRequest('failed', 'Bad Request')
-    }
+    // // Check if the user still has session or not
+    // if (user.has_session) {
+    //   return this.failedOrSuccessRequest('failed', 'Bad Request')
+    // }
 
     // Update user session in database
     try {
@@ -322,6 +328,176 @@ export class AuthService {
     return this.failedOrSuccessRequest('success', {})
   }
 
+  async sendChangePasswordEmail(email: string) {
+    // TODO: Validate request data
+    const result = await changePasswordEmail.safeParse({
+      email
+    })
+
+    if (!result.success) {
+      return this.failedOrSuccessRequest('failed', result.error.format())
+    }
+
+    // TODO: Find the user with following email address
+    const user = await User.findOne({
+      where: {
+        email
+      }
+    })
+
+    if (!user) {
+      return this.failedOrSuccessRequest('failed', 'User does not exist')
+    }
+
+    // TODO: Create changePasswordToken
+    const changePasswordToken = uuidv4() + '-' + uuidv4()
+    const hashedChangePasswordToken = await this.hashData(changePasswordToken)
+    const expiresTime = 15 * 60 * 1000 // 15 minutes
+
+    // TODO: Check if user has chanegPasswordToken in database
+    const changePasswordTokenInDB = await ChangePasswordToken.findOne({
+      where: {
+        user_id: user.id as number
+      }
+    })
+
+    if (!changePasswordTokenInDB) {
+      // TODO: Create new changePasswordToken in db
+      try {
+        await ChangePasswordToken.create({
+          hashed_token: hashedChangePasswordToken,
+          user_id: user.id as number,
+          expires: new Date(new Date().getTime() + expiresTime)
+        })
+      } catch (error) {
+        return this.failedOrSuccessRequest('failed', error)
+      }
+    } else {
+      // TODO: Update the current changePasswordToken
+      try {
+        await ChangePasswordToken.update({
+          hashed_token: hashedChangePasswordToken,
+          expires: new Date(new Date().getTime() + expiresTime)
+        }, {
+          where: {
+            user_id: user.id as number
+          }
+        })
+      } catch (error) {
+        return this.failedOrSuccessRequest('failed', error)
+      }
+    }
+
+    // TODO: Create transporter for nodemailer
+    const transporter = createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.APP_EMAIL,
+        pass: process.env.APP_PASS,
+      }
+    })
+
+    // TODO: Set the nodemailer config
+    const mailOptions = {
+      to: email,
+      subject: 'Perwibuan LMS Change Password',
+      html: `${changePasswordToken}`
+    }
+
+    // TODO: Send the account verification email to the user
+    let sendMailError;
+    transporter.sendMail(mailOptions, async (error) => {
+      if (error) {
+        sendMailError = error
+      }
+    })
+
+    if (sendMailError) {
+      // TODO: Remove the changePasswordToken that has been created
+      await ChangePasswordToken.destroy({
+        where: {
+          user_id: user.id as number
+        }
+      })
+      return this.failedOrSuccessRequest('failed', sendMailError)
+    }
+
+    return this.failedOrSuccessRequest('success', {})
+  }
+
+  async verifyNewPassword(token: string, userId: number, password: string, confirmPassword: string) {
+    // TODO: Verify request data
+    const result = await changePasswordSchema.safeParse({
+      password,
+      confirmPassword,
+      userId,
+      token,
+    })
+
+    if (!result.success) {
+      return this.failedOrSuccessRequest('failed', result.error.format())
+    }
+
+
+    // TODO: Check if the token is valid or not
+    // TODO: Get the token from database with current userId
+    const hashedChangePasswordToken = await ChangePasswordToken.findOne({
+      where: {
+        user_id: userId
+      }
+    })
+
+    if (!hashedChangePasswordToken) {
+      return this.failedOrSuccessRequest('failed', 'Token does not exist')
+    }
+
+    // TODO: Compare the token
+    const tokenMatches = await argon2.verify(hashedChangePasswordToken.hashed_token, token)
+
+    if (!tokenMatches) {
+      return this.failedOrSuccessRequest('failed', 'Invalid token')
+    }
+
+    // TODO: Check if the token does not expired
+    if (hashedChangePasswordToken.expires.getTime() < new Date().getTime()) {
+      return this.failedOrSuccessRequest('failed', 'Token is expired')
+    }
+
+    // TODO: Delete the changePasswordToken in database
+    try {
+      await ChangePasswordToken.destroy({
+        where: {
+          user_id: userId
+        }
+      })
+    } catch (error) {
+      return this.failedOrSuccessRequest('failed', error)
+    }
+
+    // TODO: Check if the password and confirm password is same
+    if (password !== confirmPassword) {
+      return this.failedOrSuccessRequest('failed', 'Password and confirm password must be same')
+    }
+
+    // TODO: Hash the password
+    const hashedPassword = await this.hashData(password)
+
+    // TODO: Change user password in database
+    try {
+      await User.update({
+        password: hashedPassword
+      }, {
+        where: {
+          id: userId
+        }
+      })
+    } catch (error) {
+      return this.failedOrSuccessRequest('failed', error)
+    }
+
+    return this.failedOrSuccessRequest('success', {})
+  }
+
   hashData(data: string) {
     return argon2.hash(data)
   }
@@ -333,3 +509,7 @@ export class AuthService {
     }
   }
 }
+
+
+
+

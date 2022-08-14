@@ -1,5 +1,5 @@
 export const swaggerDocument = {
-  openapi: '3.0.1',
+  openapi: '3.0.3',
   info: {
     title: 'Rest API',
     description: 'API Documentation.',
@@ -12,15 +12,15 @@ export const swaggerDocument = {
   ],
   components: {
     securitySchemes: {
-      bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
+      cookieAuth: {
+        type: 'apiKey',
+        in: 'cookie',
+        name: 'PWA_LMS_AT',
       },
     },
   },
   paths: {
     // eslint-disable-next-line global-require
-    ...require('./user').default,
+    ...require('./auth').default,
   },
 };

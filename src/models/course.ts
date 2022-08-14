@@ -10,11 +10,10 @@ interface CourseAttributes {
     image: string
     is_verified: boolean
 }
-
-export interface CourseInput extends Optional<CourseAttributes, 'id'|'is_verified'> {}
+export interface CourseInput extends Optional<CourseAttributes, 'id'| 'is_verified'> {}
 export interface CourseOutput extends Required<CourseAttributes> {}
 
-interface CourseInstance extends Model<CourseAttributes, CourseInput>, 
+interface CourseInstance extends Model<CourseAttributes, CourseInput>,
     CourseAttributes {
         createdAt?: Date
         updatedAt?: Date
@@ -49,4 +48,9 @@ export const Course = db.define<CourseInstance>('courses', {
       },
 },{
     timestamps: true,
+})
+
+Course.belongsTo(Instructor, {
+  foreignKey: 'instructor_id',
+  as: 'instructor'
 })
