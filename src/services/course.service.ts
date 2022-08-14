@@ -9,7 +9,7 @@ export class CourseService {
             title: payload.title,
             description: payload.description,
             image: payload.image,
-        });
+        }); 
         if(!result.success) {
             return this.failedOrSuccessRequest('failed', result.error)
         }
