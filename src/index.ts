@@ -3,6 +3,6 @@ import server from '@/server';
 
 const port = 4444;
 
-server.listen(port, () => {
+server.listen(process.env.PORT || port, () => {
   console.log(`[Server] Listening on: http://localhost:${port}`);
 });
