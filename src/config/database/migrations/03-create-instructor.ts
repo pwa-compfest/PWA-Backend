@@ -36,8 +36,9 @@ module.exports = {
           type: DataTypes.TEXT
         },
         is_verified: {
-          defaultValue: false,
-          type: DataTypes.BOOLEAN
+          defaultValue: null,
+          allowNull: true,
+          type: DataTypes.INTEGER
         },
         createdAt: {
           allowNull: true,

@@ -19,3 +19,27 @@ export const getById = async (req: Request, res: Response) => {
   return getResponse(res, getHttpCode.OK, 'Berhasil Mendapatkan Data User', data)
 }
 
+export const getCurrentUserData = async (req: Request, res: Response) => {
+  // Get user email and role from access token
+  // @ts-ignore
+  const { id, email, role } = req.user
+
+  let data: any
+
+  // Check the role and apply functionality based on that role
+  if (role === 'INSTRUCTOR') {
+    // Get the INSTRUCTOR data
+    const instructorData = await userService.getInstructorData(id)
+
+    data = instructorData.data
+  } else if (role === 'STUDENT') {
+    // Get the STUDENT data
+    const studentData = await userService.getStudentData(id)
+
+    data = studentData.data
+  }
+  data = { id, email, role, ...data.dataValues }
+
+  return getResponse(res, 200, `Success Get User Data with ID ${id}`, data)
+}
+

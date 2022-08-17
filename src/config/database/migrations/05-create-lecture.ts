@@ -22,9 +22,6 @@ module.exports = {
         url: {
           type: DataTypes.TEXT
         },
-        description: {
-          type: DataTypes.TEXT
-        },
         createdAt: {
           allowNull: true,
           type: DataTypes.DATE

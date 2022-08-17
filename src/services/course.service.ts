@@ -3,7 +3,6 @@ import { CourseSchema } from '@/dto'
 import { Op } from "sequelize";
 
 export class CourseService {
-
   private failedOrSuccessRequest(status: string, data?: any) {
     return {
       status,
@@ -40,19 +39,18 @@ export class CourseService {
     return totalCourse
   }
 
-    async createCourse(payload: CourseInput) {
-        const result = CourseSchema.safeParse({
-            title: payload.title,
-            description: payload.description,
-            image: payload.image,
-        });
-        if (!result.success) {
-            return this.failedOrSuccessRequest('failed', result.error)
-        }
-        const course = await Course.create(payload)
-        return this.failedOrSuccessRequest('success', course)
-
+  async createCourse(payload: CourseInput) {
+    const result = CourseSchema.safeParse({
+      title: payload.title,
+      description: payload.description,
+      image: payload.image,
+    });
+    if (!result.success) {
+      return this.failedOrSuccessRequest('failed', result.error)
     }
+    const course = await Course.create(payload)
+    return this.failedOrSuccessRequest('success', course)
+  }
 
   async deleteCourse(id: number) {
     const course = await Course.destroy({
@@ -74,7 +72,7 @@ export class CourseService {
       include: [{
         model: Instructor,
         as: 'instructor',
-        attributes: ['nip','name']
+        attributes: ['nip', 'name']
       }],
     })
     if (!course) {
@@ -94,7 +92,7 @@ export class CourseService {
       include: [{
         model: Instructor,
         as: 'instructor',
-        attributes: ['nip','name']
+        attributes: ['nip', 'name']
       }],
     })
     if (!course) {
@@ -117,7 +115,7 @@ export class CourseService {
       include: [{
         model: Instructor,
         as: 'instructor',
-        attributes: ['nip','name']
+        attributes: ['nip', 'name']
       }],
     })
     if (!course) {
@@ -127,11 +125,11 @@ export class CourseService {
   }
 
   async getCourseById(id: number) {
-    const course = await Course.findByPk(id,{
+    const course = await Course.findByPk(id, {
       include: [{
         model: Instructor,
         as: 'instructor',
-        attributes: ['nip','name']
+        attributes: ['nip', 'name']
       }]
     })
     if (course == null) {
@@ -149,7 +147,7 @@ export class CourseService {
       include: [{
         model: Instructor,
         as: 'instructor',
-        attributes: ['nip','name']
+        attributes: ['nip', 'name']
       }],
     })
   }
@@ -177,7 +175,7 @@ export class CourseService {
 
   async verifyCourse(id: number) {
     const course = await Course.update({
-      is_verified: true
+      is_verified: 1
     }, {
       where: {
         id: id
@@ -191,7 +189,7 @@ export class CourseService {
 
   async rejectCourse(id: number) {
     const course = await Course.update({
-      is_verified: false
+      is_verified: 0
     }, {
       where: {
         id: id
@@ -211,7 +209,5 @@ export class CourseService {
     // const enroll = await course.addUser(userId)
     // return this.failedOrSuccessRequest('success', enroll)
   }
-
-
 
 }

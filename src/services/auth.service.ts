@@ -20,196 +20,6 @@ export class AuthService {
     return argon2.hash(data)
   }
 
-  async sendChangePasswordEmail(email: string) {
-    // TODO: Validate request data
-    const result = await changePasswordEmail.safeParse({
-      email
-    })
-
-    if (!result.success) {
-      return this.failedOrSuccessRequest('failed', result.error.format())
-    }
-
-    // TODO: Find the user with following email address
-    const user = await User.findOne({
-      where: {
-        email
-      }
-    })
-
-    if (!user) {
-      return this.failedOrSuccessRequest('failed', 'User does not exist')
-    }
-
-    // TODO: Create changePasswordToken
-    const changePasswordToken = uuidv4() + '-' + uuidv4()
-    const hashedChangePasswordToken = await this.hashData(changePasswordToken)
-    const expiresTime = 15 * 60 * 1000 // 15 minutes
-
-    // TODO: Check if user has chanegPasswordToken in database
-    const changePasswordTokenInDB = await ChangePasswordToken.findOne({
-      where: {
-        user_id: user.id as number
-      }
-    })
-
-    if (!changePasswordTokenInDB) {
-      // TODO: Create new changePasswordToken in db
-      try {
-        await ChangePasswordToken.create({
-          hashed_token: hashedChangePasswordToken,
-          user_id: user.id as number,
-          expires: new Date(new Date().getTime() + expiresTime)
-        })
-      } catch (error) {
-        return this.failedOrSuccessRequest('failed', error)
-      }
-    } else {
-      // TODO: Update the current changePasswordToken
-      try {
-        await ChangePasswordToken.update({
-          hashed_token: hashedChangePasswordToken,
-          expires: new Date(new Date().getTime() + expiresTime)
-        }, {
-          where: {
-            user_id: user.id as number
-          }
-        })
-      } catch (error) {
-        return this.failedOrSuccessRequest('failed', error)
-      }
-    }
-
-    // TODO: Create transporter for nodemailer
-    const transporter = createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.APP_EMAIL,
-        pass: process.env.APP_PASS,
-      }
-    })
-
-    // TODO: Set the nodemailer config
-    const mailOptions = {
-      to: email,
-      subject: 'Perwibuan LMS Change Password',
-      html: `${changePasswordToken}`
-    }
-
-    // TODO: Send the account verification email to the user
-    let sendMailError;
-    transporter.sendMail(mailOptions, async (error) => {
-      if (error) {
-        sendMailError = error
-      }
-    })
-
-    if (sendMailError) {
-      // TODO: Remove the changePasswordToken that has been created
-      await ChangePasswordToken.destroy({
-        where: {
-          user_id: user.id as number
-        }
-      })
-      return this.failedOrSuccessRequest('failed', sendMailError)
-    }
-
-    return this.failedOrSuccessRequest('success', {})
-  }
-
-  async signIn(email: string, password: string) {
-    // Validate the data
-    const result = await signInSchema.safeParse({
-      email,
-      password
-    })
-
-    if (!result.success) {
-      return this.failedOrSuccessRequest('failed', result.error.format())
-    }
-
-    // Get the current user with the following email address
-    const user = await User.findOne({
-      where: {
-        email
-      }
-    })
-
-    if (!user) {
-      return this.failedOrSuccessRequest('failed', 'Invalid Credentials')
-    }
-
-    // TODO: Check if the user already verified
-    if (!user.is_verified) {
-      return this.failedOrSuccessRequest('failed', 'Account not verified')
-    }
-
-    // Check the password from user and password in db
-    const passwordMatches = await argon2.verify(user.password, password)
-
-    if (!passwordMatches) {
-      return this.failedOrSuccessRequest('failed', 'Invalid Credentials')
-    }
-
-    // // Check if the user still has session or not
-    // if (user.has_session) {
-    //   return this.failedOrSuccessRequest('failed', 'Bad Request')
-    // }
-
-    // Update user session in database
-    try {
-      await User.update({
-        has_session: 1,
-      }, {
-        where: {
-          id: user.id
-        }
-      })
-    } catch (error) {
-      return this.failedOrSuccessRequest('failed', error)
-    }
-
-    // Create the access and refresh token then returned it
-    const accessToken = signJWT({ email: user.email, role: user.role }, '30s')
-    const refreshToken = signJWT({ email: user.email }, '1w')
-
-
-    // Save the refreshToken to the db
-    try {
-      const hashedRefreshToken = await this.hashData(refreshToken)
-      await User.update({
-        refresh_token: hashedRefreshToken
-      }, {
-        where: {
-          id: user.id as number
-        },
-      })
-    } catch (error) {
-      return this.failedOrSuccessRequest('failed', error)
-    }
-
-    return this.failedOrSuccessRequest('success', { accessToken, refreshToken })
-  }
-
-  async signOut(email: string) {
-    // Invalidate session and deleting the refreshToken of current from db
-    try {
-      await User.update({
-        // @ts-ignore
-        refresh_token: null,
-        has_session: 0,
-      }, {
-        where: {
-          email
-        }
-      })
-    } catch (error) {
-      return this.failedOrSuccessRequest('failed', error)
-    }
-
-    return this.failedOrSuccessRequest('success', {})
-  }
-
   async signUp(email: string, password: string, confirmPassword: string, data: AdminDetails | InstructorDetails | StudentDetails) {
     // validate the data
     const result = signUpSchema.safeParse({
@@ -415,8 +225,8 @@ export class AuthService {
     }
 
     // TODO: Create the access and refresh token then returned it
-    const accessToken = signJWT({ email: user.email, role: user.role }, '30s')
-    const refreshToken = signJWT({ email: user.email }, '1w')
+    const accessToken = signJWT({ id: user.id, email: user.email, role: user.role }, '1d')
+    const refreshToken = signJWT({ id: user.id, email: user.email }, '1w')
 
 
     // TODO: Save the refreshToken to the db
@@ -431,6 +241,196 @@ export class AuthService {
       })
     } catch (error) {
       return this.failedOrSuccessRequest('failed', error)
+    }
+
+    return this.failedOrSuccessRequest('success', { accessToken, refreshToken })
+  }
+
+  async signIn(email: string, password: string) {
+    // Validate the data
+    const result = await signInSchema.safeParse({
+      email,
+      password
+    })
+
+    if (!result.success) {
+      return this.failedOrSuccessRequest('failed', result.error.format())
+    }
+
+    // Get the current user with the following email address
+    const user = await User.findOne({
+      where: {
+        email
+      }
+    })
+
+    if (!user) {
+      return this.failedOrSuccessRequest('failed', 'Invalid Credentials')
+    }
+
+    // TODO: Check if the user already verified
+    if (!user.is_verified) {
+      return this.failedOrSuccessRequest('failed', 'Account not verified')
+    }
+
+    // Check the password from user and password in db
+    const passwordMatches = await argon2.verify(user.password, password)
+
+    if (!passwordMatches) {
+      return this.failedOrSuccessRequest('failed', 'Invalid Credentials')
+    }
+
+    // // Check if the user still has session or not
+    // if (user.has_session) {
+    //   return this.failedOrSuccessRequest('failed', 'Bad Request')
+    // }
+
+    // Update user session in database
+    try {
+      await User.update({
+        has_session: 1,
+      }, {
+        where: {
+          id: user.id
+        }
+      })
+    } catch (error) {
+      return this.failedOrSuccessRequest('failed', error)
+    }
+
+    // Create the access and refresh token then returned it
+    const accessToken = signJWT({ id: user.id, email: user.email, role: user.role }, '1d')
+    const refreshToken = signJWT({ id: user.id, email: user.email }, '1w')
+
+
+    // Save the refreshToken to the db
+    try {
+      const hashedRefreshToken = await this.hashData(refreshToken)
+      await User.update({
+        refresh_token: hashedRefreshToken
+      }, {
+        where: {
+          id: user.id as number
+        },
+      })
+    } catch (error) {
+      return this.failedOrSuccessRequest('failed', error)
+    }
+
+    return this.failedOrSuccessRequest('success', { accessToken, refreshToken })
+  }
+
+  async signOut(email: string) {
+    // Invalidate session and deleting the refreshToken of current from db
+    try {
+      await User.update({
+        // @ts-ignore
+        refresh_token: null,
+        has_session: 0,
+      }, {
+        where: {
+          email
+        }
+      })
+    } catch (error) {
+      return this.failedOrSuccessRequest('failed', error)
+    }
+
+    return this.failedOrSuccessRequest('success', {})
+  }
+
+  async sendChangePasswordEmail(email: string) {
+    // TODO: Validate request data
+    const result = await changePasswordEmail.safeParse({
+      email
+    })
+
+    if (!result.success) {
+      return this.failedOrSuccessRequest('failed', result.error.format())
+    }
+
+    // TODO: Find the user with following email address
+    const user = await User.findOne({
+      where: {
+        email
+      }
+    })
+
+    if (!user) {
+      return this.failedOrSuccessRequest('failed', 'User does not exist')
+    }
+
+    // TODO: Create changePasswordToken
+    const changePasswordToken = uuidv4() + '-' + uuidv4()
+    const hashedChangePasswordToken = await this.hashData(changePasswordToken)
+    const expiresTime = 15 * 60 * 1000 // 15 minutes
+
+    // TODO: Check if user has chanegPasswordToken in database
+    const changePasswordTokenInDB = await ChangePasswordToken.findOne({
+      where: {
+        user_id: user.id as number
+      }
+    })
+
+    if (!changePasswordTokenInDB) {
+      // TODO: Create new changePasswordToken in db
+      try {
+        await ChangePasswordToken.create({
+          hashed_token: hashedChangePasswordToken,
+          user_id: user.id as number,
+          expires: new Date(new Date().getTime() + expiresTime)
+        })
+      } catch (error) {
+        return this.failedOrSuccessRequest('failed', error)
+      }
+    } else {
+      // TODO: Update the current changePasswordToken
+      try {
+        await ChangePasswordToken.update({
+          hashed_token: hashedChangePasswordToken,
+          expires: new Date(new Date().getTime() + expiresTime)
+        }, {
+          where: {
+            user_id: user.id as number
+          }
+        })
+      } catch (error) {
+        return this.failedOrSuccessRequest('failed', error)
+      }
+    }
+
+    // TODO: Create transporter for nodemailer
+    const transporter = createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.APP_EMAIL,
+        pass: process.env.APP_PASS,
+      }
+    })
+
+    // TODO: Set the nodemailer config
+    const mailOptions = {
+      to: email,
+      subject: 'Perwibuan LMS Change Password',
+      html: `${changePasswordToken}`
+    }
+
+    // TODO: Send the account verification email to the user
+    let sendMailError;
+    transporter.sendMail(mailOptions, async (error) => {
+      if (error) {
+        sendMailError = error
+      }
+    })
+
+    if (sendMailError) {
+      // TODO: Remove the changePasswordToken that has been created
+      await ChangePasswordToken.destroy({
+        where: {
+          user_id: user.id as number
+        }
+      })
+      return this.failedOrSuccessRequest('failed', sendMailError)
     }
 
     return this.failedOrSuccessRequest('success', {})

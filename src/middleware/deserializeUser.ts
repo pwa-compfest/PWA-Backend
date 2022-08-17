@@ -18,9 +18,9 @@ export default async function deserializeUser(
 
   if (accessTokenPayload) {
     // @ts-ignore
-    const { email, role } = accessTokenPayload
+    const { email, role, id } = accessTokenPayload
     // @ts-ignore
-    req.user = { email, role }
+    req.user = { email, role, id }
     return next()
   }
 
@@ -73,7 +73,7 @@ export default async function deserializeUser(
   }
 
   // User has session, create new accessToken
-  const newAccessToken = signJWT({ email: user.email, role: user.role }, '30s')
+  const newAccessToken = signJWT({ id: user.id, email: user.email, role: user.role }, '1d')
 
   // Set the accessToken to cookies
   res.cookie('PWA_LMS_AT', newAccessToken, {
@@ -82,7 +82,7 @@ export default async function deserializeUser(
   })
 
   // @ts-ignore
-  req.user = { email: user.email, role: user.role }
+  req.user = { id: user.id, email: user.email, role: user.role }
 
   return next()
 }
