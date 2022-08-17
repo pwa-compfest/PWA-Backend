@@ -152,7 +152,7 @@ export class CourseService {
     })
   }
 
-  async updateCourse(id: number, payload: CourseInput) {
+  async updateCourse(id: number, payload: any) {
     const result = CourseSchema.safeParse({
       title: payload.title,
       description: payload.description,
@@ -190,6 +190,34 @@ export class CourseService {
   async rejectCourse(id: number) {
     const course = await Course.update({
       is_verified: false
+    }, {
+      where: {
+        id: id
+      }
+    })
+    if (!course) {
+      return this.failedOrSuccessRequest('failed', 'Course Not Found')
+    }
+    return this.failedOrSuccessRequest('success', course)
+  }
+
+  async setPublicCourse(id: number) {
+    const course = await Course.update({
+      is_public: true
+    }, {
+      where: {
+        id: id
+      }
+    })
+    if (!course) {
+      return this.failedOrSuccessRequest('failed', 'Course Not Found')
+    }
+    return this.failedOrSuccessRequest('success', course)
+  }
+
+  async setPrivateCourse(id: number) {
+    const course = await Course.update({
+      is_public: false
     }, {
       where: {
         id: id

@@ -7,7 +7,10 @@ import {
     getImage,
     getCourseById,
     verifyCourse,
-    rejectCourse
+    rejectCourse,
+    publicCourse,
+    privateCourse
+    
 } from '@/controllers/course.controller'
 import upload from '@/utils/storage'
 import { requireUser } from '@/middleware/requireUser'
@@ -24,6 +27,9 @@ router.get('/image/:file', getImage)
 router.post('/', upload.single('image'), store)
 router.put('/:id', upload.single('image'), update)
 router.delete('/:id', destroy)
+router.put('/publish/:id',publicCourse)
+router.put('/private/:id',privateCourse)
+
 
 // Require Admin
 router.put('/verify/:id', requireAdmin, verifyCourse)

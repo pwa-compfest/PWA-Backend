@@ -2,11 +2,12 @@ import { Student } from '@/models/index'
 
 export class StudentService {
 
-    async getStudentByUser(id: number){
+    async getStudentId(id: number){
         const student = await Student.findOne({
             where: {
                 user_id: id
-            }
+            },
+            attributes: ['id']
         })
         return student
     }
