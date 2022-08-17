@@ -28,11 +28,11 @@ module.exports = {
         is_verified: {
           defaultValue: null,
           allowNull: true,
-          type: DataTypes.INTEGER
+          type: DataTypes.BOOLEAN
         },
         is_public: {
-          defaultValue: 0,
-          type: DataTypes.INTEGER
+          defaultValue: false,
+          type: DataTypes.BOOLEAN
         },
         createdAt: {
           allowNull: true,

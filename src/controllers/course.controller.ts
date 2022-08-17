@@ -1,4 +1,4 @@
-import { CourseService, StudentProgressService, StudentService } from '@/services/index'
+import { CourseService, StudentProgressService, StudentService, InstructorService } from '@/services/index'
 import { Request, Response } from 'express'
 import { getResponse, getHttpCode, downloadObject, uploadFile, deleteObject } from '@/utils'
 import fs from 'fs'
@@ -6,6 +6,7 @@ import fs from 'fs'
 const courseService = new CourseService()
 const studentProgressService = new StudentProgressService()
 const studentService = new StudentService()
+const instructorService = new InstructorService()
 
 export const getVerifiedCourses = async (req: Request, res: Response) => {
   const page = req.query.page ? parseInt(req.query.page as string) : 1
@@ -74,17 +75,27 @@ export const rejectCourse = async (req: Request, res: Response) => {
 }
 
 export const store = async (req: Request, res: Response) => {
+  const user_id = parseInt(req.user.id)
+  const instructorId = await instructorService.getInstructorId(user_id)
+
+  if(!instructorId){
+    return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Store Course', {});
+  }
+
   const file = req.file
   const bucket = 'perwibuan-mooc/courses'
+
   if (!file) {
     return getResponse(res, getHttpCode.BAD_REQUEST, 'Image is required', null)
   }
+
   const payload = {
-    instructor_id: req.body.instructor_id,
+    instructor_id: instructorId.id,
     title: req.body.title,
     description: req.body.description,
     image: file.filename
   }
+
   const result = await courseService.createCourse(payload)
   if (result.status === 'failed') {
     fs.unlinkSync(file.path)
@@ -92,18 +103,27 @@ export const store = async (req: Request, res: Response) => {
   }
   uploadFile(file, bucket)
   return getResponse(res, getHttpCode.OK, "Your Request Has Been Sent", result.data);
+
 }
 
 export const update = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id)
+  const instructorId = await instructorService.getInstructorId(req.user.id)
+
+  if(!instructorId){
+    return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Store Course', {});
+  }
+
   const file = req.file
   const bucket = 'perwibuan-mooc/courses'
   const data = await courseService.getCourseById(id)
   let image = file != null ? file.filename : data.data.image
 
+  if(instructorId.id != data.data.instructor_id){
+    return getResponse(res, getHttpCode.BAD_REQUEST, 'Not Allowed Update Course', {});
+  }
 
   const payload = {
-    instructor_id: req.body.instructor_id,
     title: req.body.title,
     description: req.body.description,
     image: image
@@ -143,8 +163,8 @@ export const enrollCourse = async (req: Request, res: Response) => {
     const course_id = parseInt(req.params.id)
     const user_id = parseInt(req.user.id)
 
-    const student_id = await studentService.getStudentByUser(user_id)
-    
+    const student_id = await studentService.getStudentId(user_id)
+
     if(!student_id){
         return getResponse(res, getHttpCode.BAD_REQUEST, 'Student Not Found', null)
     }
@@ -155,5 +175,24 @@ export const enrollCourse = async (req: Request, res: Response) => {
     }else{
         return getResponse(res, getHttpCode.OK, 'Success Enroll Course', result.data);
     }
+}
 
+export const publicCourse = async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id)
+    const result = await courseService.setPublicCourse(id)
+    if (result.status === 'failed') {
+        return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
+    } else {
+        return getResponse(res, getHttpCode.OK, 'Success Publish Course', result.data);
+    }
+}
+
+export const privateCourse = async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id)
+    const result = await courseService.setPrivateCourse(id)
+    if (result.status === 'failed') {
+        return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
+    } else {
+        return getResponse(res, getHttpCode.OK, 'Success Publish Course', result.data);
+    }
 }
