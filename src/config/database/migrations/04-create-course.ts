@@ -22,9 +22,12 @@ module.exports = {
         description: {
           type: DataTypes.TEXT
         },
+        image:{
+          type: DataTypes.STRING
+        },
         is_verified: {
-          defaultValue: 0,
-          type: DataTypes.INTEGER
+          defaultValue: false,
+          type: DataTypes.BOOLEAN
         },
         createdAt: {
           allowNull: true,

@@ -10,6 +10,7 @@ interface CourseAttributes {
     image: string
     is_verified: boolean
 }
+
 export interface CourseInput extends Optional<CourseAttributes, 'id'| 'is_verified'> {}
 export interface CourseOutput extends Required<CourseAttributes> {}
 

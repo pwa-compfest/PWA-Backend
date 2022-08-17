@@ -64,8 +64,8 @@ export const Instructor = db.define<InstructorModel, InstructorAddModel>('instru
     type: DataTypes.TEXT
   },
   is_verified: {
-    defaultValue: 0,
-    type: DataTypes.INTEGER
+    defaultValue: false,
+    type: DataTypes.BOOLEAN
   }
 }, {
   timestamps: true
