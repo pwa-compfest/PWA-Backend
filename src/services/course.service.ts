@@ -102,6 +102,26 @@ export class CourseService {
 
   }
 
+  async getCourseByInstructor(id: number, page: number, limit: number) {
+    const course = await Course.findAll({
+      where: {
+        instructor_id: id
+      },
+      offset: (page - 1) * limit,
+      limit: limit,
+      include: [{
+        model: Instructor,
+        as: 'instructor',
+        attributes: ['nip', 'name']
+      }],
+    })
+    if (!course) {
+      return this.failedOrSuccessRequest('failed', 'Course not found')
+    }
+    return this.failedOrSuccessRequest('success', course)
+  }
+
+
   async getBySearch(search: string, page: number, limit: number): Promise<any> {
     const course = await Course.findAll({
       where: {
@@ -137,19 +157,6 @@ export class CourseService {
     } else {
       return this.failedOrSuccessRequest('success', course)
     }
-  }
-
-  async getCourseByInstructorId(id: number): Promise<CourseOutput[]> {
-    return await Course.findAll({
-      where: {
-        instructor_id: id,
-      },
-      include: [{
-        model: Instructor,
-        as: 'instructor',
-        attributes: ['nip', 'name']
-      }],
-    })
   }
 
   async updateCourse(id: number, payload: any) {
