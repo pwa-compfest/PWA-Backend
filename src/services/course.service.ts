@@ -3,6 +3,7 @@ import { CourseSchema } from '@/dto'
 import { Op } from "sequelize";
 
 export class CourseService {
+<<<<<<< HEAD
 
   private failedOrSuccessRequest(status: string, data?: any) {
     return {
@@ -52,7 +53,21 @@ export class CourseService {
         const course = await Course.create(payload)
         return this.failedOrSuccessRequest('success', course)
 
+=======
+  async createCourse(payload: CourseInput) {
+    const result = CourseSchema.safeParse({
+      title: payload.title,
+      description: payload.description,
+      image: payload.image,
+    });
+    if (!result.success) {
+      return this.failedOrSuccessRequest('failed', result.error)
+>>>>>>> 5d287a0 (feat/lectures)
     }
+    const course = await Course.create(payload)
+    return this.failedOrSuccessRequest('success', course)
+
+  }
 
   async deleteCourse(id: number) {
     const course = await Course.destroy({
@@ -74,7 +89,7 @@ export class CourseService {
       include: [{
         model: Instructor,
         as: 'instructor',
-        attributes: ['nip','name']
+        attributes: ['nip', 'name']
       }],
     })
     if (!course) {
@@ -94,7 +109,7 @@ export class CourseService {
       include: [{
         model: Instructor,
         as: 'instructor',
-        attributes: ['nip','name']
+        attributes: ['nip', 'name']
       }],
     })
     if (!course) {
@@ -149,7 +164,7 @@ export class CourseService {
       include: [{
         model: Instructor,
         as: 'instructor',
-        attributes: ['nip','name']
+        attributes: ['nip', 'name']
       }],
     })
   }
@@ -175,6 +190,7 @@ export class CourseService {
     return this.failedOrSuccessRequest('success', course)
   }
 
+<<<<<<< HEAD
   async verifyCourse(id: number) {
     const course = await Course.update({
       is_verified: true
@@ -182,6 +198,15 @@ export class CourseService {
       where: {
         id: id
       }
+=======
+  async getCourseById(id: number) {
+    const course = await Course.findByPk(id, {
+      include: [{
+        model: Instructor,
+        as: 'instructor',
+        attributes: ['nip', 'name']
+      }]
+>>>>>>> 5d287a0 (feat/lectures)
     })
     if (!course) {
       return this.failedOrSuccessRequest('failed', 'Course Not Found')

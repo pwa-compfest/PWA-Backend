@@ -1,53 +1,59 @@
-import { Model,Optional,DataTypes } from 'sequelize'
+import { Model, Optional, DataTypes } from 'sequelize'
 import { db } from '../config/database'
 import { Instructor } from './instructor'
 
 interface CourseAttributes {
-    id: number
-    instructor_id: number
-    title: string
-    description: string
-    image: string
-    is_verified: boolean
+  id: number
+  instructor_id: number
+  title: string
+  description: string
+  image: string
+  is_verified: number
+  is_public: number
 }
 
-export interface CourseInput extends Optional<CourseAttributes, 'id'| 'is_verified'> {}
-export interface CourseOutput extends Required<CourseAttributes> {}
+export interface CourseInput extends Optional<CourseAttributes, 'id' | 'is_verified' | 'is_public'> { }
+export interface CourseOutput extends Required<CourseAttributes> { }
 
 interface CourseInstance extends Model<CourseAttributes, CourseInput>,
-    CourseAttributes {
-        createdAt?: Date
-        updatedAt?: Date
-    }
+  CourseAttributes {
+  createdAt?: Date
+  updatedAt?: Date
+}
 export const Course = db.define<CourseInstance>('courses', {
-    id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER
-      },
-      instructor_id: {
-        type: DataTypes.INTEGER,
-        references : {
-          model : 'instructors',
-          key : 'id'
-        }
-      },
-      title: {
-        type: DataTypes.STRING
-      },
-      description: {
-        type: DataTypes.TEXT
-      },
-      image : {
-        type: DataTypes.STRING
-      },
-      is_verified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-      },
-},{
-    timestamps: true,
+  id: {
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true,
+    type: DataTypes.INTEGER
+  },
+  instructor_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'instructors',
+      key: 'id'
+    }
+  },
+  title: {
+    type: DataTypes.STRING
+  },
+  description: {
+    type: DataTypes.TEXT
+  },
+  image: {
+    type: DataTypes.STRING
+  },
+  is_verified: {
+    type: DataTypes.INTEGER,
+    defaultValue: null,
+    allowNull: true,
+  },
+  is_public: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+}, {
+  timestamps: true,
 })
 Course.belongsTo(Instructor, {
   foreignKey: 'instructor_id',

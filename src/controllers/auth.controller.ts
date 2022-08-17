@@ -1,10 +1,11 @@
 import { AdminDetails, InstructorDetails, StudentDetails } from '@/common/types/user';
 import { AuthService } from '@/services/auth.service';
+import { UserService } from '@/services/user.service';
 import { getResponse } from '@/utils';
-import { Request, Response } from 'express';
-import { resourceLimits } from 'worker_threads';
+import { NextFunction, Request, Response } from 'express';
 
 const authService = new AuthService();
+const userService = new UserService()
 
 export const signUp = async (req: Request, res: Response) => {
   const { email, password, confirmPassword, role, name, photo, phoneNumber, gender } = req.body;
