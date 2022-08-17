@@ -5,27 +5,11 @@ import fs from 'fs'
 
 const courseService = new CourseService()
 
-<<<<<<< HEAD
 export const getVerifiedCourses = async (req: Request, res: Response) => {
-    const page = req.query.page ? parseInt(req.query.page as string) : 1
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10
-    const search = req.query.search ? req.query.search as string : ''
-    let result = await courseService.getAllVerifiedCourses(page, limit)
-    let total = await courseService.count(limit)
-    if(search){
-        result = await courseService.getBySearch(search, page, limit)
-        total = await courseService.countBySearch(search, limit)
-    }
-    if(result.status === 'failed'){
-        return getResponse(res, getHttpCode.BAD_REQUEST,'Failed Get Courses', total)
-    }
-    return getResponse(res, getHttpCode.OK,'Success Get Courses',result.data, total)
-=======
-export const get = async (req: Request, res: Response) => {
   const page = req.query.page ? parseInt(req.query.page as string) : 1
   const limit = req.query.limit ? parseInt(req.query.limit as string) : 10
   const search = req.query.search ? req.query.search as string : ''
-  let result = await courseService.getAllCourses(page, limit)
+  let result = await courseService.getAllVerifiedCourses(page, limit)
   let total = await courseService.count(limit)
   if (search) {
     result = await courseService.getBySearch(search, page, limit)
@@ -35,18 +19,17 @@ export const get = async (req: Request, res: Response) => {
     return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', total)
   }
   return getResponse(res, getHttpCode.OK, 'Success Get Courses', result.data, total)
->>>>>>> 5d287a0 (feat/lectures)
 }
 
 export const getCourses = async (req: Request, res: Response) => {
-    const page = req.query.page ? parseInt(req.query.page as string) : 1
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10
-    let result = await courseService.getAllCourses(page, limit)
-    let total = await courseService.count(limit)
-    if(result.status === 'failed'){
-        return getResponse(res, getHttpCode.BAD_REQUEST,'Failed Get Courses', total)
-    }
-    return getResponse(res, getHttpCode.OK,'Success Get Courses',result.data, total)
+  const page = req.query.page ? parseInt(req.query.page as string) : 1
+  const limit = req.query.limit ? parseInt(req.query.limit as string) : 10
+  let result = await courseService.getAllCourses(page, limit)
+  let total = await courseService.count(limit)
+  if (result.status === 'failed') {
+    return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', total)
+  }
+  return getResponse(res, getHttpCode.OK, 'Success Get Courses', result.data, total)
 }
 
 
@@ -58,34 +41,34 @@ export const getImage = async (req: Request, res: Response) => {
 }
 
 export const getCourseById = async (req: Request, res: Response,) => {
-    const id = parseInt(req.params.id)
-    const result = await courseService.getCourseById(id)
-    if(result.status === 'failed') {
-        return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
-    }else{
-        return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
-    }
+  const id = parseInt(req.params.id)
+  const result = await courseService.getCourseById(id)
+  if (result.status === 'failed') {
+    return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
+  } else {
+    return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
+  }
 }
 
 
 export const verifyCourse = async (req: Request, res: Response) => {
-    const id = parseInt(req.params.id)
-    const result = await courseService.verifyCourse(id)
-    if(result.status === 'failed') {
-        return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
-    }else{
-        return getResponse(res, getHttpCode.OK, 'Success Verify Course', result.data);
-    }
+  const id = parseInt(req.params.id)
+  const result = await courseService.verifyCourse(id)
+  if (result.status === 'failed') {
+    return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
+  } else {
+    return getResponse(res, getHttpCode.OK, 'Success Verify Course', result.data);
+  }
 }
 
 export const rejectCourse = async (req: Request, res: Response) => {
-    const id = parseInt(req.params.id)
-    const result = await courseService.rejectCourse(id)
-    if(result.status === 'failed') {
-        return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
-    }else{
-        return getResponse(res, getHttpCode.OK, 'Success Reject Course', result.data);
-    }
+  const id = parseInt(req.params.id)
+  const result = await courseService.rejectCourse(id)
+  if (result.status === 'failed') {
+    return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
+  } else {
+    return getResponse(res, getHttpCode.OK, 'Success Reject Course', result.data);
+  }
 }
 
 export const store = async (req: Request, res: Response) => {
@@ -151,19 +134,5 @@ export const destroy = async (req: Request, res: Response) => {
     } else {
       return getResponse(res, getHttpCode.OK, 'Success Delete Course', result.data);
     }
-<<<<<<< HEAD
-}
-=======
   }
 }
-
-export const getCourseById = async (req: Request, res: Response,) => {
-  const id = parseInt(req.params.id)
-  const result = await courseService.getCourseById(id)
-  if (result.status === 'failed') {
-    return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
-  } else {
-    return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
-  }
-}
->>>>>>> 5d287a0 (feat/lectures)
