@@ -175,7 +175,7 @@ export class CourseService {
 
   async verifyCourse(id: number) {
     const course = await Course.update({
-      is_verified: 1
+      is_verified: true
     }, {
       where: {
         id: id
@@ -189,7 +189,7 @@ export class CourseService {
 
   async rejectCourse(id: number) {
     const course = await Course.update({
-      is_verified: 0
+      is_verified: false
     }, {
       where: {
         id: id
@@ -201,13 +201,5 @@ export class CourseService {
     return this.failedOrSuccessRequest('success', course)
   }
 
-  async enrollCourse(id: number, userId: number) {
-    const course = await Course.findByPk(id)
-    if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course Not Found')
-    }
-    // const enroll = await course.addUser(userId)
-    // return this.failedOrSuccessRequest('success', enroll)
-  }
 
 }
