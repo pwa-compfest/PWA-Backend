@@ -1,5 +1,5 @@
-import { CreateQuiz, GetAllQuizFromCourse, GetSingleQuiz } from "@/common/types/quiz";
-import { createQuizSchema, getAllQuizFromCourseSchema, getSingleQuizSchema } from "@/dto";
+import { CreateQuiz, GetAllQuizFromCourse, GetSingleQuiz, UpdateQuiz } from "@/common/types/quiz";
+import { createQuizSchema, deleteQuizSchema, getAllQuizFromCourseSchema, getSingleQuizSchema, updateQuizSchema } from "@/dto";
 import { Course, Question, QuestionInput, Quiz, QuizOutput } from "@/models";
 import { StudentQuiz } from "@/models/studentQuiz";
 
@@ -84,7 +84,11 @@ export class QuizService {
       }
     })
 
-    quizData.dataValues.courseTitle = courseData?.title
+    if (!quizData) {
+      return this.failedOrSuccessRequest('failed', 400, 'Bad Request')
+    }
+
+    quizData.dataValues.courseTitle = courseData ? courseData.title : null
 
     return this.failedOrSuccessRequest('success', 200, quizData)
   }
@@ -126,6 +130,66 @@ export class QuizService {
     }
 
     return this.failedOrSuccessRequest('success', 201, {})
+  }
+
+  async updateQuiz(payload: UpdateQuiz) {
+    // Validate the payload
+    const validateArgs = updateQuizSchema.safeParse({
+      courseId: payload.courseId,
+      quizId: payload.quizId,
+      title: payload.title,
+      description: payload.description,
+      questions: payload.questions
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
+    // Update quiz
+    try {
+      await Quiz.update({
+        title: payload.title,
+        description: payload.description,
+      }, {
+        where: {
+          id: payload.quizId,
+          course_id: payload.courseId
+        }
+      })
+    } catch (error) {
+      return this.failedOrSuccessRequest('failed', 500, error)
+    }
+
+    // Update questions
+    try {
+      await Question.bulkCreate(payload.questions as QuestionInput[], {
+        updateOnDuplicate: ['question', 'answer', 'answer_right']
+      })
+    } catch (error) {
+      return this.failedOrSuccessRequest('failed', 500, error)
+    }
+
+    return this.failedOrSuccessRequest('success', 201, {})
+  }
+
+  async deleteQuiz(quizId: number) {
+    // Validate the data
+    const validateArgs = deleteQuizSchema.safeParse({
+      quizId
+    })
+
+    try {
+      await Quiz.destroy({
+        where: {
+          id: quizId
+        }
+      })
+    } catch (error) {
+      return this.failedOrSuccessRequest('failed', 500, error)
+    }
+
+    return this.failedOrSuccessRequest('success', 200, {})
   }
 
   failedOrSuccessRequest(status: string, code: number, data?: any) {

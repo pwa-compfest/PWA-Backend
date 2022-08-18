@@ -16,3 +16,10 @@ export interface CreateQuiz {
   questions: object[]
 }
 
+export interface UpdateQuiz {
+  courseId: number,
+  quizId: number,
+  title: string,
+  description: string,
+  questions: object[]
+}
