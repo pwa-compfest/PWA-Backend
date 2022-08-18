@@ -9,6 +9,12 @@ export interface GetCourseByInstructor {
     limit: number
 }
 
+export interface GetCourseByStudent{
+    studentId: number
+    page: number
+    limit: number
+}
+
 export interface GetBySearch {
     search: string
     page: number

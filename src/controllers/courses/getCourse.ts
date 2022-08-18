@@ -62,3 +62,17 @@ export const getCourseById = async (req: Request, res: Response,) => {
       return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
     }
 }
+
+export const getCourseByStudent = async (req: Request, res: Response) => {
+    const page = req.query.page ? parseInt(req.query.page as string) : 1
+    const studentId = parseInt(req.user.studentId)
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10
+    let result = await courseService.getCourseByStudent({studentId: +studentId, page: +page, limit: +limit})
+    let total = await courseService.countByStudent(studentId,limit)
+    if (result.status === 'failed') {
+        return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', total)
+    }
+}
+
+
+
