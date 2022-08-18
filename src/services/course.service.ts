@@ -175,7 +175,6 @@ export class CourseService {
 
   async getCourseByInstructor(payload: GetCourseByInstructor) {
 
-    console.log(payload.instructorId)
 
     const validateArgs = getCourseByInstructorSchema.safeParse({
       instructorId: payload.instructorId,
@@ -261,6 +260,7 @@ export class CourseService {
       return this.failedOrSuccessRequest('success', 200, course)
     }
   }
+
 
   async updateCourse(id: number, payload: CourseInput) {
 
@@ -355,7 +355,6 @@ export class CourseService {
     }
     return this.failedOrSuccessRequest('success', 200, course)
   }
-
 
   async enrollCourse(payload: EnrollCourse) {
     

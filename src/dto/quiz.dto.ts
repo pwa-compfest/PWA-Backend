@@ -26,3 +26,25 @@ export const createQuizSchema = z.object({
     answer_right: z.string()
   }).array().nonempty()
 })
+
+export const updateQuizSchema = z.object({
+  courseId: z.number(),
+  quizId: z.number(),
+  title: z.string(),
+  description: z.string(),
+  questions: z.object({
+    id: z.number(),
+    question: z.string(),
+    answer: z.object({
+      A: z.string(),
+      B: z.string(),
+      C: z.string(),
+      D: z.string()
+    }),
+    answer_right: z.string()
+  }).array().nonempty()
+})
+
+export const deleteQuizSchema = z.object({
+  quizId: z.number()
+})

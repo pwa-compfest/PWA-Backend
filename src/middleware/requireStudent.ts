@@ -21,5 +21,8 @@ export async function requireStudent(req: Request, res: Response, next: NextFunc
     return getResponse(res, 401, 'Unauthorized', {})
   }
 
+  // @ts-ignore
+  req.user['studentId'] = studentData.id
+
   return next()
 }
