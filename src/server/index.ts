@@ -11,7 +11,11 @@ const app = express();
 
 app.use(cookieParser());
 app.use(json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}
+));
 app.use(helmet());
 app.use(urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
