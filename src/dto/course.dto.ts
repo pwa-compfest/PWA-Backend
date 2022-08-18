@@ -1,6 +1,36 @@
 import z from 'zod';
 
-export const CourseSchema = z
+export const getAllCourseSchema = z.object({
+  page: z.number(),
+  limit: z.number()
+})
+
+export const getCourseByInstructorSchema = z.object({
+  instructorId: z.number(),
+  page: z.number(),
+  limit: z.number()
+})
+
+export const deleteCourseSchema = z.object({
+  courseId: z.number(),
+})
+
+export const getBySearchSchema = z.object({
+  search: z.string(),
+  page: z.number(),
+  limit: z.number()
+})
+
+export const idSchema = z.object({
+  courseId: z.number(),
+})
+
+export const enrollCourseSchema = z.object({
+  courseId: z.number(),
+  studentId: z.number(),
+})
+
+export const courseSchema = z
   .object({
     title: z.string().min(3, { message: 'Course name at least 3 characters' }),
     description: z.string().min(3, { message: 'Course description at least 3 characters' }),
@@ -24,4 +54,4 @@ export const CourseSchema = z
         message: 'Course image is required'
       })
     }
-  })
+})

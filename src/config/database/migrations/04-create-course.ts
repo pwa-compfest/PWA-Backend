@@ -26,9 +26,9 @@ module.exports = {
           type: DataTypes.STRING
         },
         is_verified: {
+          type: DataTypes.SMALLINT,
           defaultValue: null,
           allowNull: true,
-          type: DataTypes.BOOLEAN
         },
         is_public: {
           defaultValue: false,

@@ -11,7 +11,7 @@ export interface InstructorModel extends Model<InstructorModel, InstructorAddMod
   expertise: string
   phone_number: string
   photo?: string
-  is_verified?: number
+  is_verified?: number | null
   createdAt: Date
   updatedAt: Date
 }
@@ -66,7 +66,7 @@ export const Instructor = db.define<InstructorModel, InstructorAddModel>('instru
   is_verified: {
     allowNull: true,
     defaultValue: null,
-    type: DataTypes.INTEGER
+    type: DataTypes.SMALLINT
   }
 }, {
   timestamps: true
