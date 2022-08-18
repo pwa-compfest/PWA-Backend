@@ -85,6 +85,17 @@ export class UserService {
     return this.failedOrSuccessRequest('success', 200, studentData)
   }
 
+  async getAllPendingInstructorData() {
+    const pendingInstructorData = await Instructor.findAll({
+      where: {
+        is_verified: undefined
+      }
+    })
+
+    return this.failedOrSuccessRequest('success', 200, pendingInstructorData)
+  }
+
+
   failedOrSuccessRequest(status: string, code: number, data?: any) {
     return {
       status,
@@ -92,4 +103,5 @@ export class UserService {
       data
     }
   }
+
 }

@@ -43,3 +43,9 @@ export const getCurrentUserData = async (req: Request, res: Response) => {
   return getResponse(res, 200, `Success Get User Data with ID ${id}`, data)
 }
 
+export const getAllPendingInstructorData = async (req: Request, res: Response) => {
+  const result = await userService.getAllPendingInstructorData()
+
+  return getResponse(res, 200, 'Success Get All Pending Instructor Data', result.data)
+}
+
