@@ -54,13 +54,13 @@ export const getImage = async (req: Request, res: Response) => {
 }
 
 export const getCourseById = async (req: Request, res: Response,) => {
-  const id = parseInt(req.params.id)
-  const result = await courseService.getCourseById(id)
-  if (result.status === 'failed') {
-    return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
-  } else {
-    return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
-  }
+    const id = parseInt(req.params.id)
+    const result = await courseService.getCourseById(id)
+    if (result.status === 'failed') {
+      return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', {});
+    } else {
+      return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
+    }
 }
 
 export const getCourseByStudent = async (req: Request, res: Response) => {
@@ -73,6 +73,3 @@ export const getCourseByStudent = async (req: Request, res: Response) => {
     return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', total)
   }
 }
-
-
-

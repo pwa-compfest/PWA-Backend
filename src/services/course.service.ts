@@ -414,13 +414,18 @@ export class CourseService {
       where: {
         student_id: payload.studentId
       },
-      offset: (payload.page - 1) * payload.limit,
-      limit: payload.limit,
+      attributes: ['id','course_id','student_id'],
       include: [{
         model: Course,
         as: 'course',
-        attributes: ['id', 'title', 'description', 'image']
+        attributes: ['id', 'title', 'description', 'image'],
+        where: {
+          is_verified: 1,
+          is_public: true
+        },
       }],
+      offset: (payload.page - 1) * payload.limit,
+      limit: payload.limit,
     })
     if (!course) {
       return this.failedOrSuccessRequest('failed', 400, 'Course not found')
