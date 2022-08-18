@@ -302,7 +302,6 @@ export class AuthService {
     const accessToken = signJWT({ id: user.id, email: user.email, role: user.role }, '1d')
     const refreshToken = signJWT({ id: user.id, email: user.email }, '1w')
 
-
     // Save the refreshToken to the db
     try {
       const hashedRefreshToken = await this.hashData(refreshToken)

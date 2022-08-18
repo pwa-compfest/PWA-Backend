@@ -5,8 +5,7 @@ import { Router } from "express"
 
 const router = Router()
 
-
-router.get('/quiz/:quizId', requireUser, getSingleQuiz)
+router.get('/quiz/:courseId/:quizId', requireUser, getSingleQuiz)
 router.get('/:courseId', requireUser, getAllQuizFromCourse)
 router.post('/', requireInstructor, createQuiz)
 router.put('/:quizId', requireInstructor, updateQuiz)
