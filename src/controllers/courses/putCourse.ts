@@ -7,11 +7,12 @@ const courseService = new CourseService()
 const instructorService = new InstructorService()
 
 export const update = async (req: Request, res: Response) => {
+
     const id = parseInt(req.params.id)
-    const instructorId = await instructorService.getInstructorId(req.user.id)
-  
+    const instructorId = parseInt(req.user.instructorId)
+
     const file = req.file
-    
+
     if (!file) {
       return getResponse(res, getHttpCode.BAD_REQUEST, 'Image is required', null)
     }
@@ -19,25 +20,25 @@ export const update = async (req: Request, res: Response) => {
     const bucket = 'perwibuan-mooc/courses'
     const data = await courseService.getCourseById(id)
     let image = file != null ? file.filename : data.data.image
-  
-    if(instructorId.data.id != data.data.instructor_id){
+
+    if(instructorId != data.data.instructor_id){
       fs.unlinkSync(file.path)
       return getResponse(res, getHttpCode.BAD_REQUEST, 'Not Allowed Update Course', {});
     }
-  
+
     const payload = {
-      instructor_id: instructorId.data.id,
+      instructor_id: instructorId,
       title: req.body.title,
       description: req.body.description,
       image: image
     }
     const result = await courseService.updateCourse(id, payload)
-  
+
     if (file != null) {
       deleteObject(bucket, data.data.image)
       uploadFile(file, bucket)
     }
-  
+
     if (result.status === 'failed') {
       fs.unlinkSync(file.path)
       return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});

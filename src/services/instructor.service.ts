@@ -1,6 +1,4 @@
 import { Instructor } from '@/models/index'
-import { getInstructorIdSchema } from '@/dto'
-
 export class InstructorService {
 
     private failedOrSuccessRequest(status: string, code: number, data?: any) {
@@ -9,28 +7,6 @@ export class InstructorService {
             code,
             data
         }
-    }
-
-    async getInstructorId(id: number){
-
-        const validateArgs = getInstructorIdSchema.safeParse({
-            userId: id
-        })
-        
-        if (!validateArgs.success) {
-            return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
-        }
-
-        const instructor = await Instructor.findOne({
-            where: {
-                user_id: id
-            },
-            attributes: ['id']
-        })
-        if(!instructor){
-            return this.failedOrSuccessRequest('failed', 400, 'Bad Request')
-        }
-        return this.failedOrSuccessRequest('success',200,instructor)
     }
 
     async getInstructor(page: number, limit: number) {

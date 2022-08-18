@@ -21,5 +21,9 @@ export async function requireInstructor(req: Request, res: Response, next: NextF
     return getResponse(res, 401, 'Unauthorized', {})
   }
 
+  // @ts-ignore
+  req.user['instructorId'] = instructorData.id
+
+
   return next()
 }
