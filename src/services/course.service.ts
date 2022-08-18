@@ -356,7 +356,6 @@ export class CourseService {
     return this.failedOrSuccessRequest('success', 200, course)
   }
 
-
   async enrollCourse(payload: EnrollCourse) {
     
     const validateArgs = enrollCourseSchema.safeParse({

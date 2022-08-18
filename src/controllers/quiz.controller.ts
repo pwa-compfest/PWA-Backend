@@ -52,5 +52,30 @@ export const createQuiz = async (req: Request, res: Response) => {
 }
 
 export const updateQuiz = async (req: Request, res: Response) => {
-  // Get the data from request body
+  // Get the data from request body & params
+  const { courseId, title, description, questions } = req.body
+  const { quizId } = req.params
+
+  const result = await quizService.updateQuiz({ courseId, title, description, questions, quizId: +quizId })
+
+
+  if (result.status === 'failed') {
+    return getResponse(res, result.code, result.data, {})
+  }
+
+  return getResponse(res, result.code, `Quiz with ID ${quizId} has been Updated`, result.data)
+}
+
+export const deleteQuiz = async (req: Request, res: Response) => {
+  // Get the data from params
+  const { quizId } = req.params
+
+  const result = await quizService.deleteQuiz(+quizId)
+
+
+  if (result.status === 'failed') {
+    return getResponse(res, result.code, result.data, {})
+  }
+
+  return getResponse(res, result.code, `Quiz with ID ${quizId} has been Deleted`, result.data)
 }
