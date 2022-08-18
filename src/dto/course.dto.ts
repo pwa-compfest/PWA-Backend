@@ -11,6 +11,12 @@ export const getCourseByInstructorSchema = z.object({
   limit: z.number()
 })
 
+export const getCourseByStudentSchema = z.object({
+  studentId: z.number(),
+  page: z.number(),
+  limit: z.number()
+})
+
 export const deleteCourseSchema = z.object({
   courseId: z.number(),
 })

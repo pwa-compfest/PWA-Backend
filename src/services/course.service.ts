@@ -9,6 +9,7 @@ import {
   getAllCourseSchema,
   deleteCourseSchema,
   getCourseByInstructorSchema,
+  getCourseByStudentSchema,
   getBySearchSchema,
   idSchema,
   enrollCourseSchema
@@ -16,6 +17,7 @@ import {
 import {
   GetAllCourse,
   GetCourseByInstructor,
+  GetCourseByStudent,
   GetBySearch,
   VerifyCourse,
   PublishCourse,
@@ -396,13 +398,24 @@ export class CourseService {
     return this.failedOrSuccessRequest('success', 200, course)
   }
 
-  async getCourseByStudent(id: number, page: number, limit: number) {
+  async getCourseByStudent(payload: GetCourseByStudent) {
+
+    const validateArgs = getCourseByStudentSchema.safeParse({
+      studentId: payload.studentId,
+      page: payload.page,
+      limit: payload.limit
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
     const course = await StudentProgress.findAll({
       where: {
-        student_id: id
+        student_id: payload.studentId
       },
-      offset: (page - 1) * limit,
-      limit: limit,
+      offset: (payload.page - 1) * payload.limit,
+      limit: payload.limit,
       include: [{
         model: Course,
         as: 'course',
@@ -413,6 +426,19 @@ export class CourseService {
       return this.failedOrSuccessRequest('failed', 400, 'Course not found')
     }
     return this.failedOrSuccessRequest('success', 200, course)
+  }
+
+  async countByStudent(id: number, limit: number) {
+    const course = await StudentProgress.count({
+      where: {
+        student_id: id
+      }
+    })
+    const totalCourse = {
+      totalRows: course,
+      totalPage: Math.ceil(course / limit)
+    }
+    return totalCourse
   }
 
 }
