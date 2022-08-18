@@ -5,8 +5,12 @@ interface StudentQuizAttributes {
   id: number;
   student_id: number;
   quizId: number;
-  question_data: object;
+  question_data: Record<number, {
+    studentAnswer: string,
+    rightAnswer: string
+  }>;
   quiz_result: number;
+  highest_score: number;
 }
 
 export interface StudentQuizInput extends Optional<StudentQuizAttributes, 'id'> { }
@@ -42,6 +46,9 @@ export const StudentQuiz = db.define<StudentQuizInstance>('student_quizzes', {
   quiz_result: {
     type: DataTypes.INTEGER
   },
+  highest_score: {
+    type: DataTypes.INTEGER
+  }
 }, {
   timestamps: true,
 })

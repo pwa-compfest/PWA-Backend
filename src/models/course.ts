@@ -9,8 +9,8 @@ interface CourseAttributes {
   title: string
   description: string
   image: string
-  is_verified: boolean
-  is_public: boolean
+  is_verified: number
+  is_public: number
 }
 
 export interface CourseInput extends Optional<CourseAttributes, 'id' | 'is_verified' | 'is_public'> { }
@@ -45,13 +45,13 @@ export const Course = db.define<CourseInstance>('courses', {
     type: DataTypes.STRING
   },
   is_verified: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.INTEGER,
     defaultValue: null,
     allowNull: true,
   },
   is_public: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
 }, {
   timestamps: true,
