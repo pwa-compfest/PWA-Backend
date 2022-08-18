@@ -1,4 +1,4 @@
-import { Course, CourseInput, CourseOutput, Instructor } from '@/models/index'
+import { Course, CourseInput, Instructor } from '@/models/index'
 import { CourseSchema } from '@/dto'
 import { Op } from "sequelize";
 
@@ -11,22 +11,42 @@ export class CourseService {
   }
 
   async count(limit: number) {
+      const course = await Course.count({
+        where: {
+          is_verified: 1,
+          is_public: true
+        }
+      })
+
+      const totalCourse = {
+        totalRows: course,
+        totalPage: Math.ceil(course / limit)
+      }
+    
+    return totalCourse
+  }
+
+  async countByInstructor(id: number, limit: number) {
     const course = await Course.count({
       where: {
-        is_verified: true
+        instructor_id: id
       }
     })
+
     const totalCourse = {
       totalRows: course,
       totalPage: Math.ceil(course / limit)
     }
+
     return totalCourse
   }
+
 
   async countBySearch(search: string, limit: number) {
     const course = await Course.count({
       where: {
-        is_verified: true,
+        is_verified: 1,
+        is_public: true,
         title: {
           [Op.iLike]: `%${search}%`
         }
@@ -65,8 +85,12 @@ export class CourseService {
     }
   }
 
-  async getAllCourses(page: number, limit: number) {
+  async getAllCourses(page: number, limit: number, status?: string){
     const course = await Course.findAll({
+      where: {
+        is_verified: 1,
+        is_public: true
+      },
       offset: (page - 1) * limit,
       limit: limit,
       include: [{
@@ -75,17 +99,17 @@ export class CourseService {
         attributes: ['nip', 'name']
       }],
     })
+    
     if (!course) {
       return this.failedOrSuccessRequest('failed', 'Course not found')
     }
     return this.failedOrSuccessRequest('success', course)
-
   }
 
-  async getAllVerifiedCourses(page: number, limit: number) {
+  async getUnverifiedCourse(page: number, limit: number) {
     const course = await Course.findAll({
       where: {
-        is_verified: true
+        is_verified: null
       },
       offset: (page - 1) * limit,
       limit: limit,
@@ -99,7 +123,6 @@ export class CourseService {
       return this.failedOrSuccessRequest('failed', 'Course not found')
     }
     return this.failedOrSuccessRequest('success', course)
-
   }
 
   async getCourseByInstructor(id: number, page: number, limit: number) {
@@ -120,8 +143,7 @@ export class CourseService {
     }
     return this.failedOrSuccessRequest('success', course)
   }
-
-
+  
   async getBySearch(search: string, page: number, limit: number): Promise<any> {
     const course = await Course.findAll({
       where: {
@@ -159,7 +181,7 @@ export class CourseService {
     }
   }
 
-  async updateCourse(id: number, payload: any) {
+  async updateCourse(id: number, payload: CourseInput) {
     const result = CourseSchema.safeParse({
       title: payload.title,
       description: payload.description,
@@ -182,7 +204,7 @@ export class CourseService {
 
   async verifyCourse(id: number) {
     const course = await Course.update({
-      is_verified: true
+      is_verified: 1
     }, {
       where: {
         id: id
@@ -196,7 +218,7 @@ export class CourseService {
 
   async rejectCourse(id: number) {
     const course = await Course.update({
-      is_verified: false
+      is_verified: 0
     }, {
       where: {
         id: id
@@ -208,9 +230,9 @@ export class CourseService {
     return this.failedOrSuccessRequest('success', course)
   }
 
-  async setPublicCourse(id: number) {
+  async isPublic(id: number,setPublic: boolean) {
     const course = await Course.update({
-      is_public: true
+      is_public: setPublic === true ? true : false
     }, {
       where: {
         id: id
@@ -221,20 +243,4 @@ export class CourseService {
     }
     return this.failedOrSuccessRequest('success', course)
   }
-
-  async setPrivateCourse(id: number) {
-    const course = await Course.update({
-      is_public: false
-    }, {
-      where: {
-        id: id
-      }
-    })
-    if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course Not Found')
-    }
-    return this.failedOrSuccessRequest('success', course)
-  }
-
-
 }

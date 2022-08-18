@@ -25,4 +25,23 @@ export class StudentProgressService {
         return this.failedOrSuccessRequest('success', course)
     }
 
+    async getCourseByStudent(id: number, page: number, limit: number) {
+        const course = await StudentProgress.findAll({
+          where: {
+            student_id: id
+          },
+          offset: (page - 1) * limit,
+          limit: limit,
+          include: [{
+            model: Course,
+            as: 'course',
+            attributes: ['id', 'title', 'description', 'image']
+          }],
+        })
+        if (!course) {
+          return this.failedOrSuccessRequest('failed', 'Course not found')
+        }
+        return this.failedOrSuccessRequest('success', course)
+      }
+
 }

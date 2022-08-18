@@ -12,7 +12,7 @@ export const publicCourse = async (req: Request, res: Response) => {
         return getResponse(res, getHttpCode.BAD_REQUEST, 'You are not authorized to publish this course', {})
     }
 
-    const result = await courseService.setPublicCourse(id)
+    const result = await courseService.isPublic(id,true)
     if (result.status === 'failed') {
         return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
     } else {
@@ -28,7 +28,7 @@ export const privateCourse = async (req: Request, res: Response) => {
         return getResponse(res, getHttpCode.BAD_REQUEST, 'You are not authorized to private this course', {})
     }
 
-    const result = await courseService.setPrivateCourse(id)
+    const result = await courseService.isPublic(id,false)
     if (result.status === 'failed') {
         return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
     } else {

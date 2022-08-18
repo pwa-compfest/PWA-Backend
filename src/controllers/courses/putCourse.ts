@@ -10,10 +10,6 @@ export const update = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id)
     const instructorId = await instructorService.getInstructorId(req.user.id)
   
-    if(!instructorId){
-      return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Store Course', {});
-    }
-  
     const file = req.file
     
     if (!file) {
@@ -24,11 +20,12 @@ export const update = async (req: Request, res: Response) => {
     const data = await courseService.getCourseById(id)
     let image = file != null ? file.filename : data.data.image
   
-    if(instructorId.id != data.data.instructor_id){
+    if(instructorId.data.id != data.data.instructor_id){
       return getResponse(res, getHttpCode.BAD_REQUEST, 'Not Allowed Update Course', {});
     }
   
     const payload = {
+      instructor_id: instructorId.data.id,
       title: req.body.title,
       description: req.body.description,
       image: image

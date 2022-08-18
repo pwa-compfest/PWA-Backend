@@ -10,10 +10,6 @@ export const store = async (req: Request, res: Response) => {
     const user_id = parseInt(req.user.id)
     const instructorId = await instructorService.getInstructorId(user_id)
   
-    if(!instructorId){
-      return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Store Course', {});
-    }
-  
     const file = req.file
     const bucket = 'perwibuan-mooc/courses'
   
@@ -22,7 +18,7 @@ export const store = async (req: Request, res: Response) => {
     }
   
     const payload = {
-      instructor_id: instructorId.id,
+      instructor_id: instructorId.data.id,
       title: req.body.title,
       description: req.body.description,
       image: file.filename

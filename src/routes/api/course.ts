@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import {
-    getCourses,
+    getUnverifiedCourse,
     getVerifiedCourses,
     getCoursesByInstructor,
     store,
@@ -38,6 +38,6 @@ router.put('/private/:id',requireInstructor,privateCourse)
 // Require Admin
 router.put('/verify/:id', requireAdmin, verifyCourse)
 router.put('/reject/:id', requireAdmin, rejectCourse)
-router.get('/all', requireAdmin, getCourses)
+router.get('/unverified', requireAdmin, getUnverifiedCourse)
 
 export default router
