@@ -9,7 +9,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 export const db = new Sequelize(nodeEnv.database, nodeEnv.username, nodeEnv.password, {
   host: nodeEnv.host,
-  dialect: nodeEnv.dialect as Dialect,
+  port: nodeEnv.port,
+  dialect: nodeEnv.dialect as Dialect
 })
 
 db.sync()
