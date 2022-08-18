@@ -21,8 +21,7 @@ export const getAllQuizFromCourse = async (req: Request, res: Response) => {
 
 export const getSingleQuiz = async (req: Request, res: Response) => {
   // Get the data from request params and request user
-  const { quizId } = req.params
-  const { courseId } = req.body
+  const { quizId, courseId } = req.params
   // @ts-ignore
   const { role } = req.user
 

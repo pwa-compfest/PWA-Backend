@@ -23,11 +23,11 @@ import {
   PublishCourse,
   EnrollCourse
 } from '@/common/types/course'
-import {Op} from "sequelize"
+import { Op } from "sequelize"
 
 export class CourseService {
 
-  failedOrSuccessRequest(status: string, code: number, data ? : any) {
+  failedOrSuccessRequest(status: string, code: number, data?: any) {
     return {
       status,
       code,
@@ -359,7 +359,7 @@ export class CourseService {
   }
 
   async enrollCourse(payload: EnrollCourse) {
-    
+
     const validateArgs = enrollCourseSchema.safeParse({
       courseId: payload.course_id,
       studentId: payload.student_id,
@@ -381,7 +381,7 @@ export class CourseService {
       courseId: payload.course_id,
       studentId: payload.student_id,
     });
-    
+
     if (!validateArgs.success) {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }

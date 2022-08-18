@@ -1,14 +1,16 @@
 import { AdminDetails, InstructorDetails, StudentDetails } from '@/common/types/user';
 import { AuthService } from '@/services/auth.service';
-import { UserService } from '@/services/user.service';
-import { getResponse } from '@/utils';
-import { NextFunction, Request, Response } from 'express';
+import { getResponse, uploadFile } from '@/utils';
+import { Request, Response } from 'express';
+import fs from 'fs'
 
 const authService = new AuthService();
-const userService = new UserService()
 
 export const signUp = async (req: Request, res: Response) => {
-  const { email, password, confirmPassword, role, name, photo, phoneNumber, gender } = req.body;
+  const file = req.file
+  const bucket = 'perwibuan-mooc/profile'
+
+  const { email, password, confirmPassword, role, name, phoneNumber, gender } = req.body;
 
   let data: StudentDetails | InstructorDetails | AdminDetails
 
@@ -16,10 +18,10 @@ export const signUp = async (req: Request, res: Response) => {
     data = { role }
   } else if (role === 'INSTRUCTOR') {
     const { nip, expertise } = req.body
-    data = { role, nip, name, gender, expertise, phoneNumber, photo }
+    data = { role, nip, name, gender, expertise, phoneNumber, photo: file?.filename }
   } else if (role === 'STUDENT') {
     const { nisn, grade, majority } = req.body
-    data = { role, nisn, name, grade, gender, majority, phoneNumber, photo }
+    data = { role, nisn, name, grade, gender, majority, phoneNumber, photo: file?.filename }
   } else {
     return getResponse(res, 403, 'Invalid Role', {})
   }
@@ -27,7 +29,14 @@ export const signUp = async (req: Request, res: Response) => {
   const result = await authService.signUp(email, password, confirmPassword, data);
 
   if (result.status === 'failed') {
+    fs.unlinkSync(file?.path as string)
     return getResponse(res, 403, result.data, {});
+  }
+
+  if (role !== 'ADMIN') {
+    if (file) {
+      uploadFile(file, bucket)
+    }
   }
 
   return getResponse(res, 200, 'Email has been send', result.data);
