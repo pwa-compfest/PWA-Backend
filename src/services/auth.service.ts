@@ -123,7 +123,7 @@ export class AuthService {
     const mailOptions = {
       to: user.email,
       subject: 'Perwibuan LMS Account Verification',
-      html: `${userVerificationToken}`
+      html: `<a href=${'pwa-frontend-ten.vercel.app/account/verify/' + userVerificationToken + '/' + user.id}>Verify</a>`
     }
     // TODO: Send the account verification email to the user
     let sendMailError;
@@ -411,7 +411,7 @@ export class AuthService {
     const mailOptions = {
       to: email,
       subject: 'Perwibuan LMS Change Password',
-      html: `${changePasswordToken}`
+      html: `<a href=${'pwa-frontend-ten.vercel.app/password/verify/' + changePasswordToken + '/' + user.id}>Verify</a>`
     }
 
     // TODO: Send the account verification email to the user
