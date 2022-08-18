@@ -73,6 +73,3 @@ export const getCourseByStudent = async (req: Request, res: Response) => {
     return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', total)
   }
 }
-
-
-
