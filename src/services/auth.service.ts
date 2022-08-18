@@ -496,7 +496,8 @@ export class AuthService {
     // TODO: Change user password in database
     try {
       await User.update({
-        password: hashedPassword
+        password: hashedPassword,
+        is_verified: 1
       }, {
         where: {
           id: userId
