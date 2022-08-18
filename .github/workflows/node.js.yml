@@ -1,0 +1,41 @@
+# CI Name
+name: 'Deployment'
+
+# Only running when
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build:
+        # Running on latest version of Ubuntu
+        runs-on: ubuntu-latest
+
+        steps:
+            # This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
+            - name: Checkout Repository
+              uses: actions/checkout@v2
+
+            # Setup Node for Installing Dependencies
+            - name: Setup Node
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '16'
+                  check-latest: true
+
+            - name: Installing Dependencies
+              run: yarn
+
+            - name: 'Building Project'
+              run: yarn build
+
+    deploy:
+        needs: build
+
+        # Running on latest version of Ubuntu
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v2
