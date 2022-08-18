@@ -57,7 +57,7 @@ export const getCourseById = async (req: Request, res: Response,) => {
     const id = parseInt(req.params.id)
     const result = await courseService.getCourseById(id)
     if (result.status === 'failed') {
-      return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
+      return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', {});
     } else {
       return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
     }
@@ -65,12 +65,14 @@ export const getCourseById = async (req: Request, res: Response,) => {
 
 export const getCourseByStudent = async (req: Request, res: Response) => {
     const page = req.query.page ? parseInt(req.query.page as string) : 1
-    const studentId = parseInt(req.user.studentId)
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10
+    const studentId = parseInt(req.user.studentId)
     let result = await courseService.getCourseByStudent({studentId: +studentId, page: +page, limit: +limit})
     let total = await courseService.countByStudent(studentId,limit)
     if (result.status === 'failed') {
         return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', total)
+    }else{
+        return getResponse(res, getHttpCode.OK, 'Success Get Courses', result.data, total)
     }
 }
 
