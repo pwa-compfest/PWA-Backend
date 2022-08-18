@@ -29,7 +29,7 @@ router.get('/:id', requireUser, getCourseById)
 
 // Require Student
 router.get('/', requireStudent, getVerifiedCourses)
-router.post('/enroll', requireStudent, enrollCourse)
+router.post('/enroll/:id', requireStudent, enrollCourse)
 
 // Require Instructor
 router.get('/instructor',requireInstructor,getCoursesByInstructor)

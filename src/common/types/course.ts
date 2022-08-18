@@ -23,3 +23,8 @@ export interface PublishCourse {
     courseId: number
     setPublic: boolean
 }
+
+export interface EnrollCourse {
+    course_id: number
+    student_id: number
+}

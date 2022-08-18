@@ -1,4 +1,9 @@
-import { Course, CourseInput, Instructor } from '@/models/index'
+import {
+  Course,
+  CourseInput,
+  Instructor,
+  StudentProgress
+} from '@/models/index'
 import {
   courseSchema,
   getAllCourseSchema,
@@ -6,13 +11,21 @@ import {
   getCourseByInstructorSchema,
   getBySearchSchema,
   idSchema,
+  enrollCourseSchema
 } from '@/dto'
-import { GetAllCourse, GetCourseByInstructor, GetBySearch, VerifyCourse, PublishCourse } from '@/common/types/course'
-import { Op } from "sequelize"
+import {
+  GetAllCourse,
+  GetCourseByInstructor,
+  GetBySearch,
+  VerifyCourse,
+  PublishCourse,
+  EnrollCourse
+} from '@/common/types/course'
+import {Op} from "sequelize"
 
 export class CourseService {
 
-  failedOrSuccessRequest(status: string, code: number, data?: any) {
+  failedOrSuccessRequest(status: string, code: number, data ? : any) {
     return {
       status,
       code,
@@ -21,17 +34,17 @@ export class CourseService {
   }
 
   async count(limit: number) {
-      const course = await Course.count({
-        where: {
-          is_verified: 1,
-          is_public: true
-        }
-      })
-
-      const totalCourse = {
-        totalRows: course,
-        totalPage: Math.ceil(course / limit)
+    const course = await Course.count({
+      where: {
+        is_verified: 1,
+        is_public: true
       }
+    })
+
+    const totalCourse = {
+      totalRows: course,
+      totalPage: Math.ceil(course / limit)
+    }
 
     return totalCourse
   }
@@ -81,7 +94,7 @@ export class CourseService {
     }
 
     const course = await Course.create(payload)
-    return this.failedOrSuccessRequest('success',200,course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
 
   async deleteCourse(id: number) {
@@ -90,17 +103,17 @@ export class CourseService {
       courseId: id,
     })
 
-    if(!validateArgs.success) {
+    if (!validateArgs.success) {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
 
-    try{
+    try {
       await Course.destroy({
         where: {
           id: id
         }
       })
-    }catch(error){
+    } catch (error) {
       return this.failedOrSuccessRequest('failed', 500, error)
     }
 
@@ -131,7 +144,7 @@ export class CourseService {
         attributes: ['nip', 'name']
       }],
     })
-    return this.failedOrSuccessRequest('success', 200 ,course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
 
   async getUnverifiedCourse(payload: GetAllCourse) {
@@ -157,11 +170,11 @@ export class CourseService {
         attributes: ['nip', 'name']
       }],
     })
-    return this.failedOrSuccessRequest('success', 200 , course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
 
   async getCourseByInstructor(payload: GetCourseByInstructor) {
-    
+
     console.log(payload.instructorId)
 
     const validateArgs = getCourseByInstructorSchema.safeParse({
@@ -186,10 +199,10 @@ export class CourseService {
         attributes: ['nip', 'name']
       }],
     })
-    if(!course) {
-      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
+    if (!course) {
+      return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success', 200 ,course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
 
   async getBySearch(payload: GetBySearch) {
@@ -220,21 +233,21 @@ export class CourseService {
       }],
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed',400,'Course not found')
+      return this.failedOrSuccessRequest('failed', 400, 'Course not found')
     }
-    return this.failedOrSuccessRequest('success',200,course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
 
   async getCourseById(id: number) {
-    
+
     const validateArgs = idSchema.safeParse({
       courseId: id
     })
-    
+
     if (!validateArgs.success) {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
-    
+
     const course = await Course.findByPk(id, {
       include: [{
         model: Instructor,
@@ -243,9 +256,9 @@ export class CourseService {
       }]
     })
     if (course == null) {
-      return this.failedOrSuccessRequest('failed',400,'Course not found')
+      return this.failedOrSuccessRequest('failed', 400, 'Course not found')
     } else {
-      return this.failedOrSuccessRequest('success',200,course)
+      return this.failedOrSuccessRequest('success', 200, course)
     }
   }
 
@@ -268,9 +281,9 @@ export class CourseService {
       returning: true
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
+      return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success',200,course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
 
   async verifyCourse(payload: VerifyCourse) {
@@ -291,9 +304,9 @@ export class CourseService {
       }
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
+      return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success',200,course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
 
   async rejectCourse(payload: VerifyCourse) {
@@ -314,14 +327,14 @@ export class CourseService {
       }
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
+      return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success',200,course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
 
 
   async isPublic(payload: PublishCourse) {
-    
+
     const validateArgs = idSchema.safeParse({
       courseId: payload.courseId,
     })
@@ -338,8 +351,69 @@ export class CourseService {
       }
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
+      return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success',200,course)
+    return this.failedOrSuccessRequest('success', 200, course)
   }
+
+
+  async enrollCourse(payload: EnrollCourse) {
+    
+    const validateArgs = enrollCourseSchema.safeParse({
+      courseId: payload.course_id,
+      studentId: payload.student_id,
+    });
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
+    const course = await StudentProgress.create({
+      course_id: payload.course_id,
+      student_id: payload.student_id
+    })
+    return this.failedOrSuccessRequest('success', 200, course)
+  }
+
+  async checkEnroll(payload: EnrollCourse) {
+
+    const validateArgs = enrollCourseSchema.safeParse({
+      courseId: payload.course_id,
+      studentId: payload.student_id,
+    });
+    
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
+    const course = await StudentProgress.findOne({
+      where: {
+        course_id: payload.course_id,
+        student_id: payload.student_id
+      }
+    })
+    if (!course) {
+      return this.failedOrSuccessRequest('failed', 400, 'Course not found')
+    }
+    return this.failedOrSuccessRequest('success', 200, course)
+  }
+
+  async getCourseByStudent(id: number, page: number, limit: number) {
+    const course = await StudentProgress.findAll({
+      where: {
+        student_id: id
+      },
+      offset: (page - 1) * limit,
+      limit: limit,
+      include: [{
+        model: Course,
+        as: 'course',
+        attributes: ['id', 'title', 'description', 'image']
+      }],
+    })
+    if (!course) {
+      return this.failedOrSuccessRequest('failed', 400, 'Course not found')
+    }
+    return this.failedOrSuccessRequest('success', 200, course)
+  }
+
 }

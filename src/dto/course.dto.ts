@@ -25,6 +25,11 @@ export const idSchema = z.object({
   courseId: z.number(),
 })
 
+export const enrollCourseSchema = z.object({
+  courseId: z.number(),
+  studentId: z.number(),
+})
+
 export const courseSchema = z
   .object({
     title: z.string().min(3, { message: 'Course name at least 3 characters' }),
