@@ -175,7 +175,7 @@ export class CourseService {
 
   async verifyCourse(id: number) {
     const course = await Course.update({
-      is_verified: true
+      is_verified: 1
     }, {
       where: {
         id: id
@@ -189,7 +189,7 @@ export class CourseService {
 
   async rejectCourse(id: number) {
     const course = await Course.update({
-      is_verified: false
+      is_verified: 0
     }, {
       where: {
         id: id
@@ -203,7 +203,7 @@ export class CourseService {
 
   async setPublicCourse(id: number) {
     const course = await Course.update({
-      is_public: true
+      is_public: 1
     }, {
       where: {
         id: id
@@ -217,7 +217,7 @@ export class CourseService {
 
   async setPrivateCourse(id: number) {
     const course = await Course.update({
-      is_public: false
+      is_public: 0
     }, {
       where: {
         id: id
