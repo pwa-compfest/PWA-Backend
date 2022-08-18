@@ -21,6 +21,7 @@ export const update = async (req: Request, res: Response) => {
     let image = file != null ? file.filename : data.data.image
   
     if(instructorId.data.id != data.data.instructor_id){
+      fs.unlinkSync(file.path)
       return getResponse(res, getHttpCode.BAD_REQUEST, 'Not Allowed Update Course', {});
     }
   
@@ -41,7 +42,6 @@ export const update = async (req: Request, res: Response) => {
       fs.unlinkSync(file.path)
       return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
     } else {
-      fs.unlinkSync(file.path)
       return getResponse(res, getHttpCode.OK, 'Success Edit Course', result.data);
     }
   }

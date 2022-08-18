@@ -1,15 +1,26 @@
 import { Instructor } from '@/models/index'
+import { getInstructorIdSchema } from '@/dto'
 
 export class InstructorService {
 
-    private failedOrSuccessRequest(status: string, data?: any) {
+    private failedOrSuccessRequest(status: string, code: number, data?: any) {
         return {
             status,
+            code,
             data
         }
-    }   
+    }
 
     async getInstructorId(id: number){
+
+        const validateArgs = getInstructorIdSchema.safeParse({
+            userId: id
+        })
+        
+        if (!validateArgs.success) {
+            return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+        }
+
         const instructor = await Instructor.findOne({
             where: {
                 user_id: id
@@ -17,9 +28,9 @@ export class InstructorService {
             attributes: ['id']
         })
         if(!instructor){
-            return this.failedOrSuccessRequest('failed', 'instructor not found')
+            return this.failedOrSuccessRequest('failed', 400, 'Bad Request')
         }
-        return this.failedOrSuccessRequest('success', instructor)
+        return this.failedOrSuccessRequest('success',200,instructor)
     }
 
     async getInstructor(page: number, limit: number) {
@@ -31,9 +42,9 @@ export class InstructorService {
             limit: limit,
         })
         if (!instructor) {
-            return this.failedOrSuccessRequest('failed', 'Instructor not found')
+            return this.failedOrSuccessRequest('failed',400,'Instructor not found')
         }
-        return this.failedOrSuccessRequest('success', instructor)
+        return this.failedOrSuccessRequest('success',200,instructor)
     }
 
     async count(limit: number) {

@@ -1,8 +1,8 @@
-import { StudentProgress, StudentProgressInput,StudentProgressOutput, Student, Course } from '@/models/index'
+import { StudentProgress, Course } from '@/models/index'
 import { StudentProgressSchema } from '@/dto'
-import { Op } from "sequelize";
 
 export class StudentProgressService {
+    
     private failedOrSuccessRequest(status: string, data?: any) {
         return {
           status,

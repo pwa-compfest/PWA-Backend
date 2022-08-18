@@ -1,11 +1,21 @@
 import { Course, CourseInput, Instructor } from '@/models/index'
-import { CourseSchema } from '@/dto'
-import { Op } from "sequelize";
+import {
+  courseSchema,
+  getAllCourseSchema,
+  deleteCourseSchema,
+  getCourseByInstructorSchema,
+  getBySearchSchema,
+  idSchema,
+} from '@/dto'
+import { GetAllCourse, GetCourseByInstructor, GetBySearch, VerifyCourse, PublishCourse } from '@/common/types/course'
+import { Op } from "sequelize"
 
 export class CourseService {
-  private failedOrSuccessRequest(status: string, data?: any) {
+
+  failedOrSuccessRequest(status: string, code: number, data?: any) {
     return {
       status,
+      code,
       data
     }
   }
@@ -22,7 +32,7 @@ export class CourseService {
         totalRows: course,
         totalPage: Math.ceil(course / limit)
       }
-    
+
     return totalCourse
   }
 
@@ -60,100 +70,149 @@ export class CourseService {
   }
 
   async createCourse(payload: CourseInput) {
-    const result = CourseSchema.safeParse({
+    const validateArgs = courseSchema.safeParse({
       title: payload.title,
       description: payload.description,
       image: payload.image,
-    });
-    if (!result.success) {
-      return this.failedOrSuccessRequest('failed', result.error)
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
+
     const course = await Course.create(payload)
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success',200,course)
   }
 
   async deleteCourse(id: number) {
-    const course = await Course.destroy({
-      where: {
-        id: id
-      }
+
+    const validateArgs = deleteCourseSchema.safeParse({
+      courseId: id,
     })
-    if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course not found')
-    } else {
-      return this.failedOrSuccessRequest('Success Delete Course', course)
+
+    if(!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
+
+    try{
+      await Course.destroy({
+        where: {
+          id: id
+        }
+      })
+    }catch(error){
+      return this.failedOrSuccessRequest('failed', 500, error)
+    }
+
+    return this.failedOrSuccessRequest('success', 200)
   }
 
-  async getAllCourses(page: number, limit: number, status?: string){
+  async getAllCourses(payload: GetAllCourse) {
+
+    const validateArgs = getAllCourseSchema.safeParse({
+      page: payload.page,
+      limit: payload.limit
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
     const course = await Course.findAll({
       where: {
         is_verified: 1,
         is_public: true
       },
-      offset: (page - 1) * limit,
-      limit: limit,
+      offset: (payload.page - 1) * payload.limit,
+      limit: payload.limit,
       include: [{
         model: Instructor,
         as: 'instructor',
         attributes: ['nip', 'name']
       }],
     })
-    
-    if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course not found')
-    }
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success', 200 ,course)
   }
 
-  async getUnverifiedCourse(page: number, limit: number) {
+  async getUnverifiedCourse(payload: GetAllCourse) {
+
+    const validateArgs = getAllCourseSchema.safeParse({
+      page: payload.page,
+      limit: payload.limit
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
     const course = await Course.findAll({
       where: {
         is_verified: null
       },
-      offset: (page - 1) * limit,
-      limit: limit,
+      offset: (payload.page - 1) * payload.limit,
+      limit: payload.limit,
       include: [{
         model: Instructor,
         as: 'instructor',
         attributes: ['nip', 'name']
       }],
     })
-    if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course not found')
-    }
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success', 200 , course)
   }
 
-  async getCourseByInstructor(id: number, page: number, limit: number) {
+  async getCourseByInstructor(payload: GetCourseByInstructor) {
+    
+    console.log(payload.instructorId)
+
+    const validateArgs = getCourseByInstructorSchema.safeParse({
+      instructorId: payload.instructorId,
+      page: payload.page,
+      limit: payload.limit
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
     const course = await Course.findAll({
       where: {
-        instructor_id: id
+        instructor_id: payload.instructorId
       },
-      offset: (page - 1) * limit,
-      limit: limit,
+      offset: (payload.page - 1) * payload.limit,
+      limit: payload.limit,
       include: [{
         model: Instructor,
         as: 'instructor',
         attributes: ['nip', 'name']
       }],
     })
-    if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course not found')
+    if(!course) {
+      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success', 200 ,course)
   }
-  
-  async getBySearch(search: string, page: number, limit: number): Promise<any> {
+
+  async getBySearch(payload: GetBySearch) {
+
+    const validateArgs = getBySearchSchema.safeParse({
+      search: payload.search,
+      page: payload.page,
+      limit: payload.limit
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
     const course = await Course.findAll({
       where: {
         is_verified: true,
         title: {
-          [Op.iLike]: `%${search}%`
+          [Op.iLike]: `%${payload.search}%`
         }
       },
-      offset: (page - 1) * limit,
-      limit: limit,
+      offset: (payload.page - 1) * payload.limit,
+      limit: payload.limit,
       include: [{
         model: Instructor,
         as: 'instructor',
@@ -161,12 +220,21 @@ export class CourseService {
       }],
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course not found')
+      return this.failedOrSuccessRequest('failed',400,'Course not found')
     }
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success',200,course)
   }
 
   async getCourseById(id: number) {
+    
+    const validateArgs = idSchema.safeParse({
+      courseId: id
+    })
+    
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+    
     const course = await Course.findByPk(id, {
       include: [{
         model: Instructor,
@@ -175,21 +243,24 @@ export class CourseService {
       }]
     })
     if (course == null) {
-      return this.failedOrSuccessRequest('failed', 'Course not found')
+      return this.failedOrSuccessRequest('failed',400,'Course not found')
     } else {
-      return this.failedOrSuccessRequest('success', course)
+      return this.failedOrSuccessRequest('success',200,course)
     }
   }
 
   async updateCourse(id: number, payload: CourseInput) {
-    const result = CourseSchema.safeParse({
+
+    const validateArgs = courseSchema.safeParse({
       title: payload.title,
       description: payload.description,
       image: payload.image,
-    });
-    if (!result.success) {
-      return this.failedOrSuccessRequest('failed', result.error)
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
+
     const course = await Course.update(payload, {
       where: {
         id: id
@@ -197,50 +268,78 @@ export class CourseService {
       returning: true
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course Not Found')
+      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success',200,course)
   }
 
-  async verifyCourse(id: number) {
+  async verifyCourse(payload: VerifyCourse) {
+
+    const validateArgs = idSchema.safeParse({
+      id: payload.courseId,
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
     const course = await Course.update({
       is_verified: 1
     }, {
       where: {
-        id: id
+        id: payload.courseId
       }
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course Not Found')
+      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success',200,course)
   }
 
-  async rejectCourse(id: number) {
+  async rejectCourse(payload: VerifyCourse) {
+
+    const validateArgs = idSchema.safeParse({
+      id: payload.courseId,
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
     const course = await Course.update({
       is_verified: 0
     }, {
       where: {
-        id: id
+        id: payload.courseId
       }
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course Not Found')
+      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success',200,course)
   }
 
-  async isPublic(id: number,setPublic: boolean) {
+
+  async isPublic(payload: PublishCourse) {
+    
+    const validateArgs = idSchema.safeParse({
+      courseId: payload.courseId,
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
     const course = await Course.update({
-      is_public: setPublic === true ? true : false
+      is_public: payload.setPublic === true ? true : false
     }, {
       where: {
-        id: id
+        id: payload.courseId
       }
     })
     if (!course) {
-      return this.failedOrSuccessRequest('failed', 'Course Not Found')
+      return this.failedOrSuccessRequest('failed',400,'Course Not Found')
     }
-    return this.failedOrSuccessRequest('success', course)
+    return this.failedOrSuccessRequest('success',200,course)
   }
 }

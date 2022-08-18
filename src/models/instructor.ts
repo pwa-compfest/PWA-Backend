@@ -66,7 +66,7 @@ export const Instructor = db.define<InstructorModel, InstructorAddModel>('instru
   is_verified: {
     allowNull: true,
     defaultValue: null,
-    type: DataTypes.TINYINT
+    type: DataTypes.SMALLINT
   }
 }, {
   timestamps: true

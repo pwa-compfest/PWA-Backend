@@ -1,6 +1,7 @@
 import { Model, Optional, DataTypes } from 'sequelize'
 import { db } from '../config/database'
 import { Instructor } from './instructor'
+import { Quiz } from './quiz'
 
 interface CourseAttributes {
   id: number

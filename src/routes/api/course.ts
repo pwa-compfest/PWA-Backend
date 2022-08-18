@@ -11,20 +11,25 @@ import {
     verifyCourse,
     rejectCourse,
     publicCourse,
-    privateCourse
-    
+    privateCourse,
+    enrollCourse
+
 } from '@/controllers/courses'
 import upload from '@/utils/storage'
 import { requireUser } from '@/middleware/requireUser'
 import { requireInstructor } from '@/middleware/requireInstructor'
 import { requireAdmin } from '@/middleware/requireAdmin'
+import { requireStudent } from '@/middleware/requireStudent'
 
 const router = Router()
 
-// Require User
-router.get('/', requireUser, getVerifiedCourses)
-router.get('/:id', requireUser, getCourseById)
+
 router.get('/image/:file',requireUser,getImage)
+router.get('/:id', requireUser, getCourseById)
+
+// Require Student
+router.get('/', requireStudent, getVerifiedCourses)
+router.post('/enroll', requireStudent, enrollCourse)
 
 // Require Instructor
 router.get('/instructor',requireInstructor,getCoursesByInstructor)
