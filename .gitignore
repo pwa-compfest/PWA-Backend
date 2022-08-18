@@ -8,6 +8,3 @@ package-lock.json
 
 # Environment variable
 .env
-
-# Public folder
-public
