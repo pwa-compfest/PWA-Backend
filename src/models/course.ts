@@ -1,7 +1,7 @@
 import { Model, Optional, DataTypes } from 'sequelize'
 import { db } from '../config/database'
 import { Instructor } from './instructor'
-import { Quiz } from './quiz'
+import { StudentProgress } from './studentProgress'
 
 interface CourseAttributes {
   id: number
@@ -57,6 +57,8 @@ export const Course = db.define<CourseInstance>('courses', {
 }, {
   timestamps: true,
 })
+
+
 Course.belongsTo(Instructor, {
   foreignKey: 'instructor_id',
   as: 'instructor'

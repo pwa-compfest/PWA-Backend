@@ -26,7 +26,7 @@ export class StudentProgressService {
     const studentProgressData = await StudentProgress.findOne({
       where: {
         student_id: payload.studentId,
-        course_id: payload.courseId
+        courseId: payload.courseId
       },
       attributes: ['id', 'visited_lecture']
     })
@@ -52,7 +52,7 @@ export class StudentProgressService {
     // Check if the student progress is already exist or not
     const studentProgressData = await StudentProgress.findOne({
       where: {
-        course_id: payload.courseId,
+        courseId: payload.courseId,
         student_id: payload.studentId
       }
     })
@@ -70,7 +70,7 @@ export class StudentProgressService {
           visited_lecture: studentProgressData.visited_lecture
         }, {
           where: {
-            course_id: payload.courseId,
+            courseId: payload.courseId,
             student_id: payload.studentId
           }
         })
@@ -81,7 +81,7 @@ export class StudentProgressService {
       const visitedLecture: Record<number, boolean> = { [payload.lectureId]: true }
       try {
         await StudentProgress.create({
-          course_id: payload.courseId,
+          courseId: payload.courseId,
           student_id: payload.studentId,
           visited_lecture: visitedLecture
         })
