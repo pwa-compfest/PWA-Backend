@@ -142,6 +142,7 @@ export class CourseService {
       limit: payload.limit,
       include: [{
         model: Instructor,
+        as: 'instructors',
         attributes: ['nip', 'name'],
         duplicating: false
       },
@@ -155,7 +156,7 @@ export class CourseService {
     attributes: {
      include: [[Sequelize.fn('count',Sequelize.col('student_progresses.id')),'totalStudent']]
     },
-    group: ['courses.id', 'instructor.id']
+    group: ['courses.id', 'instructors.id']
     })
     return this.failedOrSuccessRequest('success', 200, course)
   }
@@ -179,7 +180,7 @@ export class CourseService {
       limit: payload.limit,
       include: [{
         model: Instructor,
-        as: 'instructor',
+        as: 'instructors',
         attributes: ['nip', 'name']
       }],
     })
@@ -208,7 +209,7 @@ export class CourseService {
       include: [
         {
           model: Instructor,
-          as: 'instructor',
+          as: 'instructors',
           attributes: ['nip', 'name'],
           duplicating: false
         },
@@ -222,7 +223,7 @@ export class CourseService {
       attributes: {
        include: [[Sequelize.fn('count',Sequelize.col('student_progresses.id')),'totalStudent']]
       },
-      group: ['courses.id', 'instructor.id']
+      group: ['courses.id', 'instructors.id']
     })
     if (!course) {
       return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
@@ -253,7 +254,7 @@ export class CourseService {
       limit: payload.limit,
       include: [{
         model: Instructor,
-        as: 'instructor',
+        as: 'instructors',
         attributes: ['nip', 'name']
       }],
     })
@@ -276,7 +277,7 @@ export class CourseService {
     const course = await Course.findByPk(id, {
       include: [{
         model: Instructor,
-        as: 'instructor',
+        as: 'instructors',
         attributes: ['nip', 'name']
       }]
     })

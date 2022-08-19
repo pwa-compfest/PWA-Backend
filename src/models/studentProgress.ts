@@ -55,7 +55,6 @@ StudentProgress.belongsTo(Course, {
     foreignKey: 'courseId',
     as: 'courses'
 })
-      
 
 StudentProgress.belongsTo(Student, {
     foreignKey: 'student_id',

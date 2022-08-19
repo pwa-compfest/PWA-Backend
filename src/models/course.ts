@@ -61,5 +61,5 @@ export const Course = db.define<CourseInstance>('courses', {
 
 Course.belongsTo(Instructor, {
   foreignKey: 'instructor_id',
-  as: 'instructor'
+  as: 'instructors'
 })
