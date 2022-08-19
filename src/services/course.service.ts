@@ -23,7 +23,7 @@ import {
   PublishCourse,
   EnrollCourse
 } from '@/common/types/course'
-import { Op } from "sequelize"
+import { Op, Sequelize } from "sequelize"
 
 export class CourseService {
 
@@ -142,9 +142,20 @@ export class CourseService {
       limit: payload.limit,
       include: [{
         model: Instructor,
-        as: 'instructor',
-        attributes: ['nip', 'name']
-      }],
+        attributes: ['nip', 'name'],
+        duplicating: false
+      },
+      {
+        model: StudentProgress,
+        as: 'student_progresses',
+        attributes: [],
+        duplicating: false
+      },
+    ],
+    attributes: {
+     include: [[Sequelize.fn('count',Sequelize.col('student_progresses.id')),'totalStudent']]
+    },
+    group: ['courses.id', 'instructor.id']
     })
     return this.failedOrSuccessRequest('success', 200, course)
   }
@@ -194,11 +205,24 @@ export class CourseService {
       },
       offset: (payload.page - 1) * payload.limit,
       limit: payload.limit,
-      include: [{
-        model: Instructor,
-        as: 'instructor',
-        attributes: ['nip', 'name']
-      }],
+      include: [
+        {
+          model: Instructor,
+          as: 'instructor',
+          attributes: ['nip', 'name'],
+          duplicating: false
+        },
+        {
+          model: StudentProgress,
+          as: 'student_progresses',
+          attributes: [],
+          duplicating: false
+        },
+      ],
+      attributes: {
+       include: [[Sequelize.fn('count',Sequelize.col('student_progresses.id')),'totalStudent']]
+      },
+      group: ['courses.id', 'instructor.id']
     })
     if (!course) {
       return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
@@ -359,7 +383,7 @@ export class CourseService {
     }
 
     const course = await StudentProgress.create({
-      course_id: payload.course_id,
+      courseId: payload.course_id,
       student_id: payload.student_id
     })
     return this.failedOrSuccessRequest('success', 200, course)
@@ -378,7 +402,7 @@ export class CourseService {
 
     const course = await StudentProgress.findOne({
       where: {
-        course_id: payload.course_id,
+        courseId: payload.course_id,
         student_id: payload.student_id
       }
     })
@@ -404,7 +428,7 @@ export class CourseService {
       where: {
         student_id: payload.studentId
       },
-      attributes: ['id','course_id','student_id'],
+      attributes: ['id','courseId','student_id'],
       include: [{
         model: Course,
         as: 'course',

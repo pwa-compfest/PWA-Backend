@@ -4,7 +4,7 @@ import {Course,Student} from './index'
 
 interface StudentProgressAttributes {
     id: number
-    course_id: number
+    courseId: number
     student_id: number
     visited_lecture: any
 }
@@ -18,14 +18,14 @@ interface StudentProgressInstance extends Model<StudentProgressAttributes, Stude
         updatedAt?: Date
     }
 
-export const StudentProgress = db.define<StudentProgressInstance>('student_progress', {
+export const StudentProgress = db.define<StudentProgressInstance>('student_progresses', {
     id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
     },
-    course_id: {
+    courseId: {
         type: DataTypes.INTEGER,
         references : {
             model : 'courses',
@@ -46,10 +46,16 @@ export const StudentProgress = db.define<StudentProgressInstance>('student_progr
     timestamps: true,
 })
 
-StudentProgress.belongsTo(Course, {
-    foreignKey: 'course_id',
-    as: 'course'
+Course.hasMany(StudentProgress, {
+    sourceKey: 'id',
+    as: 'student_progresses'
 })
+
+StudentProgress.belongsTo(Course, {
+    foreignKey: 'courseId',
+    as: 'courses'
+})
+      
 
 StudentProgress.belongsTo(Student, {
     foreignKey: 'student_id',
