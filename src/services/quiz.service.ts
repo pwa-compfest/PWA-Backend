@@ -25,7 +25,7 @@ export class QuizService {
         include: [{
           model: StudentQuiz,
           as: 'student_quizzes',
-          attributes: ['quiz_result']
+          attributes: ['quiz_result', 'highest_score']
         }],
       })
     } else {
