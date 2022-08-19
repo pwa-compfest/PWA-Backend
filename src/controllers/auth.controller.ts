@@ -27,7 +27,9 @@ export const signUp = async (req: Request, res: Response) => {
   const result = await authService.signUp(email, password, confirmPassword, data);
 
   if (result.status === 'failed') {
-    fs.unlinkSync(file?.path as string)
+    if (file) {
+      fs.unlinkSync(file?.path as string)
+    }
     return getResponse(res, 403, result.data, {});
   }
 
