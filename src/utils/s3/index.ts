@@ -21,7 +21,6 @@ export const uploadFile = (file:any,bucket:string) => {
                 console.log("Error", err);
             }
             if (data) {
-                console.log("Upload Success", data.Location);
                 fs.unlinkSync(file.path);
             }
         });
@@ -54,5 +53,5 @@ export const downloadObject = (key: string,bucket: string) => {
         Key: key
     };
     return s3.getObject(s3Params).createReadStream();
-     
+
 }
