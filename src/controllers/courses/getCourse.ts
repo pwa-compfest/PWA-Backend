@@ -61,5 +61,7 @@ export const getCourseByStudent = async (req: Request, res: Response) => {
   let total = await courseService.countByStudent(studentId, limit)
   if (result.status === 'failed') {
     return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', total)
+  } else {
+    return getResponse(res, getHttpCode.OK, 'Success Get Course', result.data);
   }
 }

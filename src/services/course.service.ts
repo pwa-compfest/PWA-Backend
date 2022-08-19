@@ -322,7 +322,7 @@ export class CourseService {
     if (!validateArgs.success) {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
-    
+
     // check if course exist
     const checkCourse = await Course.findByPk(payload.courseId)
     if (!checkCourse) {
