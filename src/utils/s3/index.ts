@@ -30,11 +30,10 @@ export const uploadFile = (file:any,bucket:string) => {
 export const getSignedUrl = (file:any,bucket:string) => {
     const s3Params = {
         Bucket: bucket,
-        Key: `${file.filename}`,
-        Expires: 60,
+        Key: file
     };
-    const url = s3.getSignedUrl('putObject', s3Params);
-    return url;
+    return s3.getSignedUrl('getObject', s3Params)
+
 }
 
 // Deletes an object
@@ -53,5 +52,5 @@ export const downloadObject = (key: string,bucket: string) => {
         Key: key
     };
     return s3.getObject(s3Params).createReadStream();
-
 }
+
