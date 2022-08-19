@@ -12,7 +12,8 @@ import {
     publicCourse,
     privateCourse,
     enrollCourse,
-    getCourseByStudent
+    getCourseByStudent,
+    getDetailCourseByStudent
 } from '@/controllers/courses'
 import upload from '@/utils/storage'
 import { requireUser } from '@/middleware/requireUser'
@@ -25,6 +26,7 @@ const router = Router()
 // Require Student
 router.get('/', requireStudent, getVerifiedCourses)
 router.get('/me', requireStudent, getCourseByStudent)
+router.get('/me/:id',requireStudent,getDetailCourseByStudent)
 router.post('/enroll/:id', requireStudent, enrollCourse)
 
 // Require Instructor

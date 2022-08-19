@@ -12,12 +12,14 @@ import {
   getCourseByStudentSchema,
   getBySearchSchema,
   idSchema,
-  enrollCourseSchema
+  enrollCourseSchema,
+  getDetailCourseByStudentSchema
 } from '@/dto'
 import {
   GetAllCourse,
   GetCourseByInstructor,
   GetCourseByStudent,
+  GetDetailCourseByStudent,
   GetBySearch,
   VerifyCourse,
   PublishCourse,
@@ -441,6 +443,39 @@ export class CourseService {
       }],
       offset: (payload.page - 1) * payload.limit,
       limit: payload.limit,
+    })
+    if (!course) {
+      return this.failedOrSuccessRequest('failed', 400, 'Course not found')
+    }
+    return this.failedOrSuccessRequest('success', 200, course)
+  }
+
+  async getDetailCourseByStudent(payload: GetDetailCourseByStudent) {
+
+    const validateArgs = getDetailCourseByStudentSchema.safeParse({
+      studentId: payload.studentId,
+      courseId: payload.courseId
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+
+    const course = await StudentProgress.findOne({
+      where: {
+        courseId : payload.courseId,
+        student_id: payload.studentId
+      },
+      attributes: ['id','courseId','student_id'],
+      include: [{
+        model: Course,
+        as: 'course',
+        attributes: ['id', 'title', 'description', 'image'],
+        where: {
+          is_verified: 1,
+          is_public: true
+        },
+      }],
     })
     if (!course) {
       return this.failedOrSuccessRequest('failed', 400, 'Course not found')
