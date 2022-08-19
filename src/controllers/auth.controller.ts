@@ -11,9 +11,7 @@ export const signUp = async (req: Request, res: Response) => {
   const bucket = 'perwibuan-mooc/profile'
 
   const { email, password, confirmPassword, role, name, phoneNumber, gender } = req.body;
-
   let data: StudentDetails | InstructorDetails | AdminDetails
-
   if (role === 'ADMIN') {
     data = { role }
   } else if (role === 'INSTRUCTOR') {
