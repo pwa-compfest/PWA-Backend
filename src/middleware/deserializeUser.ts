@@ -9,7 +9,10 @@ export default async function deserializeUser(
   res: Response,
   next: NextFunction
 ) {
-  const { PWA_LMS_AT: accessToken, PWA_LMS_RT: refreshToken } = req.cookies
+  // const { PWA_LMS_AT: accessToken, PWA_LMS_RT: refreshToken } = req.cookies
+  const authHeader = req.headers.authorization
+  const accessToken = authHeader?.split(' ')?.[1]
+  const refreshToken = ''
 
   // If there is no accessToken continue to the next step
   if (!accessToken) return next()
