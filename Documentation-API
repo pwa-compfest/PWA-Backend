@@ -1,0 +1,1022 @@
+{
+	"info": {
+		"_postman_id": "9ae4a177-d19d-4a1e-80e1-1a11c2ca728b",
+		"name": "Perwibuan API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5567025"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Sign Up",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"user@mail.com\",\r\n  \"password\": \"12345678\",\r\n  \"confirmPassword\": \"12345678\",\r\n  \"role\": \"ADMIN\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/signup",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Student",
+					"item": [
+						{
+							"name": "Sign Up",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": "hajargak@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "12345678",
+											"type": "text"
+										},
+										{
+											"key": "confirmPassword",
+											"value": "12345678",
+											"type": "text"
+										},
+										{
+											"key": "role",
+											"value": "STUDENT",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "Huhu",
+											"type": "text"
+										},
+										{
+											"key": "phoneNumber",
+											"value": "089987319823",
+											"type": "text"
+										},
+										{
+											"key": "gender",
+											"value": "FEMALE",
+											"type": "text"
+										},
+										{
+											"key": "nisn",
+											"value": "30006789",
+											"type": "text"
+										},
+										{
+											"key": "grade",
+											"value": "11",
+											"type": "text"
+										},
+										{
+											"key": "majority",
+											"value": "Science",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file",
+											"src": "/C:/Users/user/Downloads/caf48ccd7b83b2cf6f116c7da8ee133e.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/auth/signup",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Instructor",
+					"item": [
+						{
+							"name": "Sign Up",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"baktaharisudewa21@gmail.com\",\r\n  \"password\": \"12345678\",\r\n  \"confirmPassword\": \"12345678\",\r\n  \"role\": \"INSTRUCTOR\",\r\n  \"name\": \"Huhu\",\r\n  \"phoneNumber\": \"089987319823\",\r\n  \"photo\": \"https://i.pinimg.com/564x/3e/18/83/3e1883ca724cd0a55de94fae32343fdd.jpg\",\r\n  \"gender\": \"MALE\",\r\n  \"nip\": \"19757328\",\r\n  \"expertise\": \"Mathematics\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/signup",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"hajargak@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/signin",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"80ddf024-1739-4722-927f-4374b58902a6-735c7e3c-3cec-4164-9a1c-8e0c0253ff5f\",\r\n    \"userId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/account/verify",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"account",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Out",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_AT=",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_RT=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "javascript"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/signout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"signout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Change Password Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"user@mail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/password/send",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"password",
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify New Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"token\",\r\n    \"userId\": 1,\r\n    \"password\": \"password\",\r\n    \"confirmPassword\": \"confirmPassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/password/verify",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"password",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "instructor",
+					"item": [
+						{
+							"name": "getCoursesByInstructor",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "",
+										"value": "PWA_LMS_AT=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJmYWphcnZ1YW5hQGdtYWlsLmNvbSIsInJvbGUiOiJJTlNUUlVDVE9SIiwiaWF0IjoxNjYwODA5MTM0LCJleHAiOjE2NjA4OTU1MzR9.Uhv5ZygeQ94L5JnWVSe0GRyOf6yCnafq6hVPb_BBRIWgbqJEjW6IwKdPo7e54Mvl08dc36qzRh-3lE0cWVCgJnsLJxOR9n9tpTTCJTsy5ryp8m90MBu-tCziX_F7Ytng85lseUiMvZBZFGCqBTO1iYoDfvqOQ8zzPH_MQjKfU2c; PWA_LMS_RT=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJmYWphcnZ1YW5hQGdtYWlsLmNvbSIsImlhdCI6MTY2MDgwOTEzNCwiZXhwIjoxNjYxNDEzOTM0fQ.Ht-RcgyVUCRR3g3EWzCIyI6o1kVEkCAQukS5EzzdsuKiYsJwD4Fwy_sEfF961hsbiq8HNBiuHg-8wIiw29xaPCv_kALRYdjsRuIjfJEf5Czs1GS9QcsGnEfCP3QOv_et_PP8N0u2MeR6EG7JIEOswAbjXEvO2Kqg_c4Ikdu8IwY",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{url}}/courses/instructor?page=1&limit=1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										"instructor"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Course",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Calculus 2",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "this is description",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/Pastel/Pictures/05bab1_shofa_10060111017_skr_2015.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{ur}}/courses",
+									"host": [
+										"{{ur}}"
+									],
+									"path": [
+										"courses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Course",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Course",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Set Public",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses/publish/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										"publish",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Set Private",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses/private/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										"private",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "admin",
+					"item": [
+						{
+							"name": "getUnverifiedCourse",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses/unverified",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										"unverified"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Course",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses/verify/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										"verify",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reject Course",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses/reject/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										"reject",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "student",
+					"item": [
+						{
+							"name": "getVerifiedCourses",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses?page=1&limit=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Enroll Course",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses/enroll/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										"enroll",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get My Course",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/courses/me",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"courses",
+										"me"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getCourseById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/courses/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"courses",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lecture",
+			"item": [
+				{
+					"name": "Student",
+					"item": [
+						{
+							"name": "Add Student Progress",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_AT=",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_RT=",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"courseId\": 1,\r\n    \"lectureId\": 7\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/lectures/student-progress",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"lectures",
+										"student-progress"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Student Progress",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_AT=",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_RT=",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/lectures/student-progress/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"lectures",
+										"student-progress",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Instructor",
+					"item": [
+						{
+							"name": "Create Lectures",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_AT=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiIxMzUyMTE1MEBzdGQuc3RlaS5pdGIuYWMuaWQiLCJyb2xlIjoiSU5TVFJVQ1RPUiIsImlhdCI6MTY2MDcyNzc1NywiZXhwIjoxNjYwODE0MTU3fQ.StdTsODUkMvgXwKd4GOtfZ3qIF0BwzN-aBOQF3v6pcgHRUyJ6sQRfN73F7amN4Ff9HE7Qwu7_bdyz2RHP9l7v7iO0bBGQFjBNmAzQNmOQP0ZDxYD0UqAuBu2UN0m67oXHJsi2pj0_UGSWOG-kJq5B9pac5ISO73CpFDXh-8yVl8",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_RT=",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"lecturesData\": [\r\n        {\r\n            \"course_id\": 1,\r\n            \"title\": \"Lecture 1 Course 1\",\r\n            \"url\": \"https://youtu.be/FHll_CxOupA\"\r\n        },\r\n        {\r\n            \"course_id\": 1,\r\n            \"title\": \"Lecture 2 Course 1\",\r\n            \"url\": \"https://youtu.be/FHll_CxOupA\"\r\n        },\r\n        {\r\n            \"course_id\": 1,\r\n            \"title\": \"Lecture 3 Course 1\",\r\n            \"url\": \"https://youtu.be/FHll_CxOupA\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/lectures",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"lectures"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Lecture",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_AT=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiIxMzUyMTE1MEBzdGQuc3RlaS5pdGIuYWMuaWQiLCJyb2xlIjoiSU5TVFJVQ1RPUiIsImlhdCI6MTY2MDgxNTM4NCwiZXhwIjoxNjYwOTAxNzg0fQ.PKbp6pVAUD0R18LMjbZeXS4gu5fDdeZDQOqTBuLLV9AU9T5JgfPcD10W5LQ5DuRHUnwYUKMVo4btdM7ZMKqbsn8NqlChAhoyDMD0C7P8Qv3LAX0BxIcAZuWZIF-2kW3iNVeeJOqD8w_ZPAWWZ01eg05In9RN8VFXcSIDr0D-3Mk",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_RT=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiIxMzUyMTE1MEBzdGQuc3RlaS5pdGIuYWMuaWQiLCJpYXQiOjE2NjA4MTUzODQsImV4cCI6MTY2MTQyMDE4NH0.CRvQTHfS1sS8xFgA7oWGIQaQJgzf4OFmuzaA-hvr_HJBkctkYR_3q7dP-LFGJFKb0NbbC5GpSgOIZsVi4gvKZJxW55atX9xdnjqyzxhhlZwkB2jE7ZbFIR-CMAYQIgxPFyj7EPJXogM0z1EUYKGjE-oX3NKuINOZDFClKsXcqq4",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"courseId\": 1,\r\n    \"title\": \"title\",\r\n    \"url\": \"url\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/lectures/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"lectures",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Lecture",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_AT=",
+										"type": "text"
+									},
+									{
+										"key": "Cookie",
+										"value": "PWA_LMS_RT=",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/lectures/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"lectures",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get All Lectures",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_AT=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiIxMzUyMTE1MEBzdGQuc3RlaS5pdGIuYWMuaWQiLCJyb2xlIjoiSU5TVFJVQ1RPUiIsImlhdCI6MTY2MDcyNzc1NywiZXhwIjoxNjYwODE0MTU3fQ.StdTsODUkMvgXwKd4GOtfZ3qIF0BwzN-aBOQF3v6pcgHRUyJ6sQRfN73F7amN4Ff9HE7Qwu7_bdyz2RHP9l7v7iO0bBGQFjBNmAzQNmOQP0ZDxYD0UqAuBu2UN0m67oXHJsi2pj0_UGSWOG-kJq5B9pac5ISO73CpFDXh-8yVl8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/lectures/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"lectures",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Quiz",
+			"item": [
+				{
+					"name": "Instructor",
+					"item": []
+				},
+				{
+					"name": "Get Single Quiz",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_AT=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiIxMzUyMTE1MEBzdGQuc3RlaS5pdGIuYWMuaWQiLCJyb2xlIjoiSU5TVFJVQ1RPUiIsImlhdCI6MTY2MDgxNTM4NCwiZXhwIjoxNjYwOTAxNzg0fQ.PKbp6pVAUD0R18LMjbZeXS4gu5fDdeZDQOqTBuLLV9AU9T5JgfPcD10W5LQ5DuRHUnwYUKMVo4btdM7ZMKqbsn8NqlChAhoyDMD0C7P8Qv3LAX0BxIcAZuWZIF-2kW3iNVeeJOqD8w_ZPAWWZ01eg05In9RN8VFXcSIDr0D-3Mk",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_RT=",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/quizzes/quiz/1/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"quizzes",
+								"quiz",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Quiz from Course",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_AT=",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_RT=",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/quizzes/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"quizzes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Current User Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_AT=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiIxMzUyMTE1MEBzdGQuc3RlaS5pdGIuYWMuaWQiLCJyb2xlIjoiSU5TVFJVQ1RPUiIsImlhdCI6MTY2MDgxNTM4NCwiZXhwIjoxNjYwOTAxNzg0fQ.PKbp6pVAUD0R18LMjbZeXS4gu5fDdeZDQOqTBuLLV9AU9T5JgfPcD10W5LQ5DuRHUnwYUKMVo4btdM7ZMKqbsn8NqlChAhoyDMD0C7P8Qv3LAX0BxIcAZuWZIF-2kW3iNVeeJOqD8w_ZPAWWZ01eg05In9RN8VFXcSIDr0D-3Mk",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "PWA_LMS_RT=",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/users/data",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"data"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Image",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/image/:folder/:file",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"image",
+						":folder",
+						":file"
+					],
+					"variable": [
+						{
+							"key": "folder",
+							"value": "courses"
+						},
+						{
+							"key": "file",
+							"value": "1660812798937-2ed076ce-e2a7-4513-8aca-275131913f79.jpg"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
