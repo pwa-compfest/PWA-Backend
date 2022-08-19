@@ -56,17 +56,17 @@ export const verifyAccount = async (req: Request, res: Response) => {
   res.cookie('PWA_LMS_AT', accessToken, {
     maxAge: 24 * 60 * 60 * 1000, // 1 day ,
     sameSite: 'none',
-    secure: true,
-    httpOnly: true,
+    secure: false,
+    httpOnly: false,
   })
   res.cookie('PWA_LMS_RT', refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     sameSite: 'none',
     secure: false,
-    httpOnly: true,
+    httpOnly: false,
   })
 
-  return getResponse(res, 200, 'Account Activated', {})
+  return getResponse(res, 200, 'Account Activated', { accessToken, refreshToken })
 }
 
 export const signIn = async (req: Request, res: Response) => {
@@ -81,15 +81,15 @@ export const signIn = async (req: Request, res: Response) => {
     maxAge: 24 * 60 * 60 * 1000, // 1 day ,
     sameSite: 'none',
     secure: false,
-    httpOnly: true,
+    httpOnly: false,
   })
   res.cookie('PWA_LMS_RT', refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     sameSite: 'none',
-    secure: true,
-    httpOnly: true,
+    secure: false,
+    httpOnly: false,
   })
-  return getResponse(res, 200, 'Sign In Success', {})
+  return getResponse(res, 200, 'Sign In Success', { accessToken, refreshToken })
 }
 
 
@@ -103,15 +103,15 @@ export const signOut = async (req: Request, res: Response) => {
   // Remove accessToken and refreshToken from cookie
   res.cookie('PWA_LMS_AT', '', {
     maxAge: -1,
-    secure: true,
+    secure: false,
     sameSite: 'none',
-    httpOnly: true,
+    httpOnly: false,
   })
   res.cookie('PWA_LMS_RT', '', {
     maxAge: -1,
     secure: false,
     sameSite: 'none',
-    httpOnly: true
+    httpOnly: false
   })
   return getResponse(res, 200, 'Sign Out Success', {})
 }
