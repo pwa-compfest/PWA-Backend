@@ -288,18 +288,25 @@ export class CourseService {
     return this.failedOrSuccessRequest('success', 200, course)
   }
 
-  async verifyCourse(payload: VerifyCourse) {
+  async isVerify(payload: VerifyCourse) {
 
     const validateArgs = idSchema.safeParse({
-      id: payload.courseId,
+      courseId: payload.courseId,
     })
 
     if (!validateArgs.success) {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
+    
+    // check if course exist
+    const checkCourse = await Course.findByPk(payload.courseId)
+    if (!checkCourse) {
+      return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
+    }
 
+    const is_verified = payload.is_verified === 1 ? 1 : 0
     const course = await Course.update({
-      is_verified: 1
+      is_verified: is_verified
     }, {
       where: {
         id: payload.courseId
@@ -310,30 +317,6 @@ export class CourseService {
     }
     return this.failedOrSuccessRequest('success', 200, course)
   }
-
-  async rejectCourse(payload: VerifyCourse) {
-
-    const validateArgs = idSchema.safeParse({
-      id: payload.courseId,
-    })
-
-    if (!validateArgs.success) {
-      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
-    }
-
-    const course = await Course.update({
-      is_verified: 0
-    }, {
-      where: {
-        id: payload.courseId
-      }
-    })
-    if (!course) {
-      return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
-    }
-    return this.failedOrSuccessRequest('success', 200, course)
-  }
-
 
   async isPublic(payload: PublishCourse) {
 
@@ -345,6 +328,13 @@ export class CourseService {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
 
+    // check course
+    const checkCourse = await Course.findByPk(payload.courseId)
+    if (!checkCourse) {
+      return this.failedOrSuccessRequest('failed', 400, 'Course Not Found')
+    }
+
+    // update is_public
     const course = await Course.update({
       is_public: payload.setPublic === true ? true : false
     }, {

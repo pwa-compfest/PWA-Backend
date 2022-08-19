@@ -6,7 +6,7 @@ const courseService = new CourseService()
 
 export const verifyCourse = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id)
-    const result = await courseService.verifyCourse({courseId: +id})
+    const result = await courseService.isVerify({courseId: +id, is_verified: 1})
     if (result.status === 'failed') {
         return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
     } else {
@@ -16,7 +16,7 @@ export const verifyCourse = async (req: Request, res: Response) => {
 
 export const rejectCourse = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id)
-    const result = await courseService.rejectCourse({courseId: +id})
+    const result = await courseService.isVerify({courseId: +id, is_verified: 0})
     if (result.status === 'failed') {
         return getResponse(res, getHttpCode.BAD_REQUEST, result.data, {});
     } else {

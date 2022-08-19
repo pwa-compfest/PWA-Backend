@@ -23,6 +23,7 @@ export interface GetBySearch {
 
 export interface VerifyCourse {
     courseId: number
+    is_verified: number
 }
 
 export interface PublishCourse {
