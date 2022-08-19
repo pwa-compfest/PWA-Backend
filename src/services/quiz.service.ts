@@ -61,7 +61,7 @@ export class QuizService {
         include: [{
           model: Question,
           as: 'questions',
-          attributes: ['question', 'answer']
+          attributes: ['id', 'question', 'answer']
         }]
       })
     } else {
