@@ -26,11 +26,7 @@ export const StudentProgress = db.define<StudentProgressInstance>('student_progr
         type: DataTypes.INTEGER
     },
     courseId: {
-        type: DataTypes.INTEGER,
-        references : {
-            model : 'courses',
-            key : 'id'
-        }
+        type: DataTypes.INTEGER
     },
     student_id: {
         type: DataTypes.INTEGER,
@@ -45,7 +41,6 @@ export const StudentProgress = db.define<StudentProgressInstance>('student_progr
 },{
     timestamps: true,
 })
-
 Course.hasMany(StudentProgress, {
     sourceKey: 'id',
     as: 'student_progresses'
@@ -53,7 +48,7 @@ Course.hasMany(StudentProgress, {
 
 StudentProgress.belongsTo(Course, {
     foreignKey: 'courseId',
-    as: 'courses'
+    as: 'course'
 })
 
 StudentProgress.belongsTo(Student, {
