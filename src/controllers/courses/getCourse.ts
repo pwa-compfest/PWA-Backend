@@ -1,6 +1,6 @@
 import { CourseService } from '@/services/index'
 import { Request, Response } from 'express'
-import { getResponse, getHttpCode, downloadObject } from '@/utils'
+import { getResponse, getHttpCode } from '@/utils'
 
 const courseService = new CourseService()
 
@@ -34,9 +34,6 @@ export const getCoursesByInstructor = async (req: Request, res: Response) => {
   const page = req.query.page ? parseInt(req.query.page as string) : 1
   const limit = req.query.limit ? parseInt(req.query.limit as string) : 10
   const instructorId = parseInt(req.user.instructorId)
-
-  console.log(instructorId)
-
   let result = await courseService.getCourseByInstructor({ instructorId: +instructorId, page: +page, limit: +limit })
   let total = await courseService.countByInstructor(instructorId, limit)
   if (result.status === 'failed') {
@@ -44,13 +41,6 @@ export const getCoursesByInstructor = async (req: Request, res: Response) => {
   }
 
   return getResponse(res, getHttpCode.OK, 'Success Get Courses', result.data, total)
-}
-
-export const getImage = async (req: Request, res: Response) => {
-  const bucket = 'perwibuan-mooc/courses'
-  const { file } = req.params
-  const readStream = downloadObject(file, bucket)
-  readStream.pipe(res)
 }
 
 export const getCourseById = async (req: Request, res: Response,) => {

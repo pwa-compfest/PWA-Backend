@@ -6,7 +6,6 @@ import {
     store,
     update,
     destroy,
-    getImage,
     getCourseById,
     verifyCourse,
     rejectCourse,
@@ -43,7 +42,6 @@ router.get('/unverified', requireAdmin, getUnverifiedCourse)
 
 
 // Require User
-router.get('/image/:file',requireUser,getImage)
 router.get('/:id', requireUser, getCourseById)
 
 export default router

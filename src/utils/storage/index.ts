@@ -1,20 +1,30 @@
 import multer from 'multer'
-
-type DestinationCallback = (error: Error | null, destination: string) => void
-type FileNameCallback = (error: Error | null, filename: string) => void
-
+import path from 'path'
 const storage = multer.diskStorage({
-    destination: function (req, file, callback) {
+    destination: function (req,file,callback: any) {
         callback(null, './public/uploads');
     },
-    filename: function (req, file, callback) {
-        callback(null,Date.now() + '-' + file.originalname);
+    filename: function (req: any, file: any, callback: any) {
+        callback(null,Date.now() + '-' +  path.extname(file.originalname));
     },
 });
 
 const upload = multer({
     storage : storage,
-    limits : {fileSize : 1024*1024}
+    fileFilter: checkFileType,
+    limits : {fileSize : 1024*1024},
 })
+
+function checkFileType(req: any, file: any, callback: any) {
+    const fileTypes = /jpeg|jpg|png|gif/;
+    const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimeType = fileTypes.test(file.mimetype);
+    if(extName && mimeType){
+        return callback(null,true);
+    }else{
+        callback('Error: Images Only!');
+    }
+}
+
 
 export default upload
