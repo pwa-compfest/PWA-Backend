@@ -39,6 +39,8 @@ export const getCurrentUserData = async (req: Request, res: Response) => {
     data = studentData.data
   }else if (role === 'ADMIN') {
     const adminData = await userService.getAdminData(id)
+
+    data = adminData.data
   }
   data = { id, email, role, ...data.dataValues }
 
