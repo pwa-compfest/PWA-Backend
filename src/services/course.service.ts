@@ -539,6 +539,4 @@ export class CourseService {
       return this.failedOrSuccessRequest('success', 200, course)
     }
   }
-
-
 }
