@@ -402,7 +402,8 @@ export class CourseService {
 
     const course = await StudentProgress.create({
       courseId: payload.course_id,
-      student_id: payload.student_id
+      student_id: payload.student_id,
+      visited_lecture: {}
     })
     return this.failedOrSuccessRequest('success', 200, course)
   }
