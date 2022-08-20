@@ -1,7 +1,6 @@
 import { Model, Optional, DataTypes } from 'sequelize'
 import { db } from '../config/database'
 import { Instructor } from './instructor'
-import { StudentProgress } from './studentProgress'
 
 interface CourseAttributes {
   id: number
@@ -9,6 +8,7 @@ interface CourseAttributes {
   title: string
   description: string
   image: string
+  getSignedUrl: string
   is_verified: number | null
   is_public: boolean
 }
@@ -43,6 +43,9 @@ export const Course = db.define<CourseInstance>('courses', {
     type: DataTypes.TEXT
   },
   image: {
+    type: DataTypes.STRING
+  },
+  getSignedUrl: {
     type: DataTypes.STRING
   },
   is_verified: {
