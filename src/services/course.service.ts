@@ -451,7 +451,7 @@ export class CourseService {
       include: [{
           model: Course,
           as: 'course',
-          attributes: ['id', 'title', 'description', 'image'],
+          attributes: ['id', 'title', 'description', 'image', 'getSignedUrl'],
             where: {
               is_verified: 1,
               is_public: true
@@ -492,7 +492,7 @@ export class CourseService {
       include: [{
           model: Course,
           as: 'course',
-          attributes: ['id', 'title', 'description', 'image'],
+          attributes: ['id', 'title', 'description', 'image', 'getSignedUrl'],
             where: {
               is_verified: 1,
               is_public: true
