@@ -43,9 +43,10 @@ export const getCoursesByInstructor = async (req: Request, res: Response) => {
   return getResponse(res, getHttpCode.OK, 'Success Get Courses', result.data, total)
 }
 
-export const getCourseById = async (req: Request, res: Response,) => {
+export const getDetailCourseByInstructor = async (req: Request, res: Response,) => {
     const id = parseInt(req.params.id)
-    const result = await courseService.getCourseById(id)
+    const instructorId = parseInt(req.user.instructorId)
+    const result = await courseService.getDetailCourseByInstructor(id,instructorId)
     if (result.status === 'failed') {
       return getResponse(res, getHttpCode.BAD_REQUEST, 'Failed Get Courses', {});
     } else {
