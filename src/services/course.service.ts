@@ -511,5 +511,22 @@ export class CourseService {
     return totalCourse
   }
 
+  async getCourseById(id: number) {
+
+    const validateArgs = idSchema.safeParse({
+      courseId: id
+    })
+
+    if (!validateArgs.success) {
+      return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
+    }
+    const course = await Course.findByPk(id)
+    if (course == null) {
+      return this.failedOrSuccessRequest('failed', 400, 'Course not found')
+    } else {
+      return this.failedOrSuccessRequest('success', 200, course)
+    }
+  }
+
 
 }
