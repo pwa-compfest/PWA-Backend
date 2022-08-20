@@ -501,11 +501,6 @@ export class CourseService {
               as: 'instructors',
               attributes: ['nip', 'name']
             }]
-        },
-        {
-          model: Instructor,
-          as: 'instructors',
-          attributes: ['nip', 'name'],
       }],
     })
     if (!course) {
