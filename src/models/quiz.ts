@@ -49,6 +49,7 @@ export const Quiz = db.define<QuizInstance>('quizzes', {
 
 Quiz.hasMany(StudentQuiz, {
   sourceKey: 'id',
+  onDelete: 'CASCADE',
   as: 'student_quizzes'
 })
 
@@ -59,6 +60,7 @@ StudentQuiz.belongsTo(Quiz, {
 
 Quiz.hasMany(Question, {
   sourceKey: 'id',
+  onDelete: 'CASCADE',
   as: 'questions'
 })
 
