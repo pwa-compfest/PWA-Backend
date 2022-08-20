@@ -18,7 +18,7 @@ export class LectureService {
       where: {
         course_id: courseId
       },
-      attributes: ['title', 'url']
+      attributes: ['id', 'title', 'url']
     })
 
     return this.failedOrSuccessRequest('success', 200, lecturesData)
