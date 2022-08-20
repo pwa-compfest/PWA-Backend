@@ -46,7 +46,8 @@ export const Course = db.define<CourseInstance>('courses', {
     type: DataTypes.STRING
   },
   getSignedUrl: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: true
   },
   is_verified: {
     type: DataTypes.SMALLINT,
