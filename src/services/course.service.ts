@@ -275,17 +275,28 @@ export class CourseService {
     if (!validateArgs.success) {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
-
     const course = await Course.findOne({
       where: {
         id : id,
         instructor_id: instructorId
       },
-      include: [{
-        model: Instructor,
-        as: 'instructors',
-        attributes: ['id', 'nip', 'name']
-      }]
+      include: [
+        {
+          model: Instructor,
+          as: 'instructors',
+          attributes: ['id', 'nip', 'name']
+        },
+        {
+          model: StudentProgress,
+          as: 'student_progresses',
+          attributes: [],
+          duplicating: false
+        },
+      ],
+      attributes: {
+        include: [[Sequelize.fn('count', Sequelize.col('student_progresses.id')), 'totalStudent']]
+      },
+      group: ['courses.id', 'instructors.id']
     })
     if (course == null) {
       return this.failedOrSuccessRequest('failed', 400, 'Course not found')
