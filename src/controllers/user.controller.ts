@@ -37,6 +37,8 @@ export const getCurrentUserData = async (req: Request, res: Response) => {
     const studentData = await userService.getStudentData(id)
 
     data = studentData.data
+  }else if (role === 'ADMIN') {
+    const adminData = await userService.getAdminData(id)
   }
   data = { id, email, role, ...data.dataValues }
 
@@ -48,4 +50,3 @@ export const getAllPendingInstructorData = async (req: Request, res: Response) =
 
   return getResponse(res, 200, 'Success Get All Pending Instructor Data', result.data)
 }
-

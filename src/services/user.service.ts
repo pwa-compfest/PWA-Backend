@@ -31,7 +31,7 @@ export class UserService {
     })
   }
 
-  async getUserById(id: string): Promise<UserViewModel> {
+  async getUserById(id: number): Promise<UserViewModel> {
     const user = await User.findOne({
       where: {
         id,
@@ -80,6 +80,18 @@ export class UserService {
         user_id: userId,
       },
       attributes: ['nisn', 'name', 'grade', 'gender', 'majority', ['phone_number', 'phoneNumber'], 'photo']
+    })
+
+    return this.failedOrSuccessRequest('success', 200, studentData)
+  }
+
+  async getAdminData(userId: number) {
+    const adminData = await User.findOne({
+      where: {
+        user_id: userId,
+        role: 'ADMIN'
+      },
+      attributes: ['id','email','role']
     })
 
     return this.failedOrSuccessRequest('success', 200, studentData)
