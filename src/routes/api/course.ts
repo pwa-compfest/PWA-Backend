@@ -6,7 +6,7 @@ import {
     store,
     update,
     destroy,
-    getCourseById,
+    getDetailCourseByInstructor,
     verifyCourse,
     rejectCourse,
     publicCourse,
@@ -16,7 +16,6 @@ import {
     getDetailCourseByStudent
 } from '@/controllers/courses'
 import upload from '@/utils/storage'
-import { requireUser } from '@/middleware/requireUser'
 import { requireInstructor } from '@/middleware/requireInstructor'
 import { requireAdmin } from '@/middleware/requireAdmin'
 import { requireStudent } from '@/middleware/requireStudent'
@@ -31,6 +30,7 @@ router.post('/enroll/:id', requireStudent, enrollCourse)
 
 // Require Instructor
 router.get('/instructor',requireInstructor,getCoursesByInstructor)
+router.get('/instructor/:id', requireInstructor, getDetailCourseByInstructor)
 router.post('/',requireInstructor,upload.single('image'), store)
 router.put('/:id',requireInstructor,upload.single('image'), update)
 router.delete('/:id',requireInstructor,destroy)
@@ -44,6 +44,6 @@ router.get('/unverified', requireAdmin, getUnverifiedCourse)
 
 
 // Require User
-router.get('/:id', requireUser, getCourseById)
+
 
 export default router

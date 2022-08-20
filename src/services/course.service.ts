@@ -53,10 +53,10 @@ export class CourseService {
     return totalCourse
   }
 
-  async countByInstructor(id: number, limit: number) {
+  async countByInstructor(instructorId: number, limit: number) {
     const course = await Course.count({
       where: {
-        instructor_id: id
+        instructor_id: instructorId
       }
     })
 
@@ -266,7 +266,7 @@ export class CourseService {
     return this.failedOrSuccessRequest('success', 200, course)
   }
 
-  async getCourseById(id: number) {
+  async getDetailCourseByInstructor(id: number,instructorId: number) {
 
     const validateArgs = idSchema.safeParse({
       courseId: id
@@ -276,7 +276,11 @@ export class CourseService {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
 
-    const course = await Course.findByPk(id, {
+    const course = await Course.findOne({
+      where: {
+        id : id,
+        instructor_id: instructorId
+      },
       include: [{
         model: Instructor,
         as: 'instructors',
