@@ -13,13 +13,9 @@ export const update = async (req: Request, res: Response) => {
 
     const file = req.file
 
-    if (!file) {
-      return getResponse(res, getHttpCode.BAD_REQUEST, 'Image is required', null)
-    }
-
     const bucket = 'perwibuan-mooc/courses'
     const data = await courseService.getCourseById(id)
-    let image = file != null ? file.filename : data.data.image
+    let image = file != null ? file?.filename : data.data.image
 
     if(instructorId != data.data.instructor_id){
       fs.unlinkSync(file.path)
