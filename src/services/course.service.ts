@@ -448,13 +448,19 @@ export class CourseService {
       },
       attributes: ['id', 'courseId', 'student_id'],
       include: [{
-        model: Course,
-        as: 'course',
-        attributes: ['id', 'title', 'description', 'image'],
-        where: {
-          is_verified: 1,
-          is_public: true
+          model: Course,
+          as: 'course',
+          attributes: ['id', 'title', 'description', 'image'],
+          where: {
+            is_verified: 1,
+            is_public: true
+          },
         },
+        {
+          model: Instructor,
+          as: 'instructors',
+          attributes: ['nip', 'name'],
+          duplicating: false
       }],
       offset: (payload.page - 1) * payload.limit,
       limit: payload.limit,
@@ -483,13 +489,19 @@ export class CourseService {
       },
       attributes: ['id', 'courseId', 'student_id'],
       include: [{
-        model: Course,
-        as: 'course',
-        attributes: ['id', 'title', 'description', 'image'],
-        where: {
-          is_verified: 1,
-          is_public: true
+          model: Course,
+          as: 'course',
+          attributes: ['id', 'title', 'description', 'image'],
+          where: {
+            is_verified: 1,
+            is_public: true
+          }
         },
+        {
+          model: Instructor,
+          as: 'instructors',
+          attributes: ['nip', 'name'],
+          duplicating: false
       }],
     })
     if (!course) {
@@ -516,7 +528,7 @@ export class CourseService {
     const validateArgs = idSchema.safeParse({
       courseId: id
     })
-
+    
     if (!validateArgs.success) {
       return this.failedOrSuccessRequest('failed', 400, validateArgs.error.format())
     }
