@@ -1,6 +1,6 @@
 import { CourseService, InstructorService } from '@/services/index'
 import { Request, Response } from 'express'
-import { getResponse, getHttpCode, uploadFile, deleteObject } from '@/utils'
+import { getResponse, getHttpCode, uploadFile, deleteObject, getSignedUrl } from '@/utils'
 import fs from 'fs'
 
 const courseService = new CourseService()
@@ -26,7 +26,8 @@ export const update = async (req: Request, res: Response) => {
       instructor_id: instructorId,
       title: req.body.title,
       description: req.body.description,
-      image: image
+      image: image,
+      getSignedUrl: getSignedUrl(image,bucket)
     }
     const result = await courseService.updateCourse(id, payload)
 
