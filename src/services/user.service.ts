@@ -31,7 +31,7 @@ export class UserService {
     })
   }
 
-  async getUserById(id: number): Promise<UserViewModel> {
+  async getUserById(id: any): Promise<UserViewModel> {
     const user = await User.findOne({
       where: {
         id,
@@ -93,8 +93,7 @@ export class UserService {
       },
       attributes: ['id','email','role']
     })
-
-    return this.failedOrSuccessRequest('success', 200, studentData)
+    return this.failedOrSuccessRequest('success', 200, adminData)
   }
 
   async getAllPendingInstructorData() {
