@@ -451,17 +451,17 @@ export class CourseService {
           model: Course,
           as: 'course',
           attributes: ['id', 'title', 'description', 'image'],
-          where: {
-            is_verified: 1,
-            is_public: true
-          },
+            where: {
+              is_verified: 1,
+              is_public: true
+            },
+            include: [{
+              model: Instructor,
+              as: 'instructors',
+              attributes: ['nip', 'name']
+            }]
         },
-        {
-          model: Instructor,
-          as: 'instructors',
-          attributes: ['nip', 'name'],
-          duplicating: false
-      }],
+      ],
       offset: (payload.page - 1) * payload.limit,
       limit: payload.limit,
     })
@@ -492,16 +492,20 @@ export class CourseService {
           model: Course,
           as: 'course',
           attributes: ['id', 'title', 'description', 'image'],
-          where: {
-            is_verified: 1,
-            is_public: true
-          }
+            where: {
+              is_verified: 1,
+              is_public: true
+            },
+            include: [{
+              model: Instructor,
+              as: 'instructors',
+              attributes: ['nip', 'name']
+            }]
         },
         {
           model: Instructor,
           as: 'instructors',
           attributes: ['nip', 'name'],
-          duplicating: false
       }],
     })
     if (!course) {
