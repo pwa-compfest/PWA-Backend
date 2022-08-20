@@ -88,7 +88,7 @@ export class UserService {
   async getAdminData(userId: number) {
     const adminData = await User.findOne({
       where: {
-        user_id: userId,
+        id: userId,
         role: 'ADMIN'
       },
       attributes: ['id','email','role']
