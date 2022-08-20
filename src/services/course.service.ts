@@ -154,11 +154,11 @@ export class CourseService {
         attributes: [],
         duplicating: false
       },
-    ],
-    attributes: {
-     include: [[Sequelize.fn('count',Sequelize.col('student_progresses.id')),'totalStudent']]
-    },
-    group: ['courses.id', 'instructors.id']
+      ],
+      attributes: {
+        include: [[Sequelize.fn('count', Sequelize.col('student_progresses.id')), 'totalStudent']]
+      },
+      group: ['courses.id', 'instructors.id']
     })
     return this.failedOrSuccessRequest('success', 200, course)
   }
@@ -223,7 +223,7 @@ export class CourseService {
         },
       ],
       attributes: {
-       include: [[Sequelize.fn('count',Sequelize.col('student_progresses.id')),'totalStudent']]
+        include: [[Sequelize.fn('count', Sequelize.col('student_progresses.id')), 'totalStudent']]
       },
       group: ['courses.id', 'instructors.id']
     })
@@ -284,7 +284,7 @@ export class CourseService {
       include: [{
         model: Instructor,
         as: 'instructors',
-        attributes: ['nip', 'name']
+        attributes: ['id', 'nip', 'name']
       }]
     })
     if (course == null) {
@@ -435,7 +435,7 @@ export class CourseService {
       where: {
         student_id: payload.studentId
       },
-      attributes: ['id','courseId','student_id'],
+      attributes: ['id', 'courseId', 'student_id'],
       include: [{
         model: Course,
         as: 'course',
@@ -467,10 +467,10 @@ export class CourseService {
 
     const course = await StudentProgress.findOne({
       where: {
-        courseId : payload.courseId,
+        courseId: payload.courseId,
         student_id: payload.studentId
       },
-      attributes: ['id','courseId','student_id'],
+      attributes: ['id', 'courseId', 'student_id'],
       include: [{
         model: Course,
         as: 'course',
